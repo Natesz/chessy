@@ -1,0 +1,149 @@
+<script setup lang="ts">
+import { Chessground } from 'chessground'
+import type { Api } from 'chessground/api'
+import type { Config } from 'chessground/config'
+import type { Key } from 'chessground/types'
+import type { AnalysisLine, ChessMove, GameState } from '~/types/chess'
+
+const props = defineProps<{
+  fen: string
+  gameState: GameState
+  legalMoves: Map<Key, Key[]>
+  analysisLines: AnalysisLine[]
+}>()
+
+const emit = defineEmits<{
+  move: [move: ChessMove]
+  navigate: [direction: 'back' | 'forward']
+}>()
+
+const boardEl = ref<HTMLElement | null>(null)
+let cg: Api | null = null
+let pendingFen: string | null = null
+
+function computeArrows() {
+  const lines = props.analysisLines
+  if (!lines.length || props.gameState.isGameOver) return { shapes: [], brushes: {} }
+
+  const best = lines[0]
+  if (!best?.bestMove) return { shapes: [], brushes: {} }
+
+  const second = lines[1]
+  const third = lines[2]
+  const gap12 = second ? Math.abs(best.score.value - second.score.value) : 10
+
+  const shapes: Array<{ orig: Key, dest: Key, brush: string }> = []
+  const brushes: Record<string, { key: string, color: string, opacity: number, lineWidth: number }> = {}
+
+  brushes.arrow1 = { key: 'arrow1', color: '#15781B', opacity: 0.85, lineWidth: 12 }
+  shapes.push({
+    orig: best.bestMove.slice(0, 2) as Key,
+    dest: best.bestMove.slice(2, 4) as Key,
+    brush: 'arrow1',
+  })
+
+  if (gap12 < 5) {
+    const ratio12 = (5 - Math.min(gap12, 5)) / 5
+
+    if (second?.bestMove) {
+      const w2 = Math.max(2, Math.round(ratio12 * 10 + 2))
+      brushes.arrow2 = { key: 'arrow2', color: '#15781B', opacity: ratio12 * 0.7 + 0.15, lineWidth: w2 }
+      shapes.push({
+        orig: second.bestMove.slice(0, 2) as Key,
+        dest: second.bestMove.slice(2, 4) as Key,
+        brush: 'arrow2',
+      })
+    }
+
+    if (third?.bestMove) {
+      const gap13 = Math.abs(best.score.value - third.score.value)
+      const ratio13 = (5 - Math.min(gap13, 5)) / 5
+      if (ratio13 > 0) {
+        const w3 = Math.max(2, Math.round(ratio13 * 10 + 2))
+        brushes.arrow3 = { key: 'arrow3', color: '#15781B', opacity: ratio13 * 0.7 + 0.15, lineWidth: w3 }
+        shapes.push({
+          orig: third.bestMove.slice(0, 2) as Key,
+          dest: third.bestMove.slice(2, 4) as Key,
+          brush: 'arrow3',
+        })
+      }
+    }
+  }
+
+  return { shapes, brushes }
+}
+
+function syncCg() {
+  if (!cg) return
+  const { shapes, brushes } = computeArrows()
+  cg.set({
+    fen: props.fen,
+    turnColor: props.gameState.turn === 'w' ? 'white' : 'black',
+    movable: {
+      color: props.gameState.isGameOver ? undefined : 'both',
+      dests: props.legalMoves,
+    },
+    check: props.gameState.isCheck,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    drawable: { shapes, brushes } as any,
+  })
+}
+
+function initChessground() {
+  if (!boardEl.value) return
+
+  const config: Config = {
+    fen: props.fen,
+    orientation: 'white',
+    turnColor: props.gameState.turn === 'w' ? 'white' : 'black',
+    movable: {
+      color: 'both',
+      free: false,
+      dests: props.legalMoves,
+      events: {
+        after(orig: Key, dest: Key) {
+          pendingFen = props.fen
+          emit('move', { from: orig, to: dest })
+          nextTick(() => {
+            if (pendingFen === props.fen) syncCg()
+            pendingFen = null
+          })
+        },
+      },
+    },
+    draggable: { enabled: true },
+    selectable: { enabled: true },
+    highlight: { lastMove: true, check: true },
+    animation: { enabled: true, duration: 200 },
+    drawable: { enabled: true, visible: true, defaultSnapToValidMove: true },
+  }
+
+  cg = Chessground(boardEl.value, config)
+}
+
+function handleWheel(e: WheelEvent) {
+  e.preventDefault()
+  emit('navigate', e.deltaY < 0 ? 'back' : 'forward')
+}
+
+watch(() => props.fen, () => syncCg())
+watch(() => props.analysisLines, () => syncCg())
+
+onMounted(() => initChessground())
+onUnmounted(() => cg?.destroy())
+</script>
+
+<template>
+  <div
+    class="relative w-full"
+    @wheel.prevent="handleWheel"
+  >
+    <div ref="boardEl" class="w-full" style="aspect-ratio: 1" />
+  </div>
+</template>
+
+<style>
+@import 'chessground/assets/chessground.base.css';
+@import 'chessground/assets/chessground.brown.css';
+@import 'chessground/assets/chessground.cburnett.css';
+</style>
