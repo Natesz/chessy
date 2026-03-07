@@ -70,21 +70,6 @@ app/
 - `chessground/assets/chessground.brown.css`
 - `chessground/assets/chessground.cburnett.css`
 
----
-
-## Tervezett modulok (scope referencia)
-
-| Modul | Prioritás |
-|-------|-----------|
-| Interaktív tábla + Stockfish elemzés | **1. iteráció (aktuális)** |
-| Ellenfél-felkészülés (Lichess API) | Később |
-| Puzzle trainer (Lichess puzzle API) | Később |
-| Személyes statisztika dashboard | Később |
-| Versenyszervezés (svájci rendszer) | Később |
-| Versenynaptár (chess.results.com) | Később |
-
----
-
 ## Amit sosem csinálunk (ebben a projektben)
 
 - Lichess Open Database letöltése/tárolása (csak API hívások)

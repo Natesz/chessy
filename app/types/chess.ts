@@ -40,3 +40,10 @@ export interface MoveNode {
   moveNumber: number
   color: 'w' | 'b'
 }
+
+export interface VarLine {
+  depth: number
+  moves: MoveNode[]
+  subVarGroups: VarLine[][]
+  isSimple: boolean
+}

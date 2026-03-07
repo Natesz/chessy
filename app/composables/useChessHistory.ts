@@ -105,7 +105,6 @@ export function useChessHistory() {
 
   function reset() {
     root.children = []
-    idCounter = 0
     treeVersion.value++
     currentNode.value = root
   }

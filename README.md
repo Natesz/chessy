@@ -15,7 +15,7 @@ Az alkalmazás jelenleg egy teljes értékű sakktáblát tartalmaz, amelyen:
 - **Értékelési sáv** – vizuálisan mutatja, melyik félnek van előnye
 - **Legjobb lépés jelzése** – nyilak mutatják a Stockfish által javasolt legjobb lépéseket a táblán, vastagsága arányos az értékelési különbséggel
 - **Elemzési sorok** – 3 alternatív folytatás jelenik meg értékeléssel és lépésekkel
-- **Lépés history** – az összes lépés megjelenik számozva, a mellékágak kisebb betűmérettel
+- **Lépés history** – az összes lépés megjelenik számozva, a mellékágak zárójelben jelennek meg (egyszerű mellékág egy sorban, összetett blokkban), szintenként kisebb betűmérettel
 - **Visszajátszás** – a history bármely pontjára lehet kattintani, nyílbillentyűkkel és egérgörgővel is navigálható
 - **Elemzői mód** – matt esetén nincs zavaró felirat, a király piros marad
 

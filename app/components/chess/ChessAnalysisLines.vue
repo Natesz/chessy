@@ -22,7 +22,7 @@ function formatScore(score: EvalResult): string {
 
     <!-- Loading state -->
     <template v-if="isAnalyzing && !lines.length">
-      <div v-for="i in 3" :key="i" class="h-8 rounded bg-gray-800 animate-pulse" />
+      <div v-for="i in 3" :key="`loading-${i}`" class="h-8 rounded bg-gray-800 animate-pulse" />
     </template>
 
     <!-- Lines -->

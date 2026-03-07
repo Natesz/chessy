@@ -61,6 +61,16 @@ Ez a fájl minden iteráció és patch után frissítendő. Rögzíti, mi kész�
 
 ---
 
+### Patch-ek
+
+| Patch | Hiba | Megoldás |
+|-------|------|----------|
+| `02-prd-patch-01.md` | Mellékágban fekete lépés eltűnt; mellékágak zsúfolt középre-behúzása; hiányzó hierarchikus nesting | `ChessMoveVariation.vue` rekurzív komponens; `buildVarLine` fa-bejárás; inline/block megjelenítés mélység szerint; `pl-2` bal oldali igazítás |
+| `02-prd-patch-02.md` | Komponens nem töltődött be (auto-import kihagyás); runtime `__vnode` null hiba navigációkor; rekurzív önreferencia nem működött; index-kulcs instabilitás; `idCounter` reset ID-ütközés | Explicit import; `defineOptions({ name })`; stabil node.id kulcsok; `idCounter` reset eltávolítva |
+| `02-prd-patch-03.md` | `__vnode` null runtime hiba navigáció közben (nem determinisztikus); `Új elemzés` nem ürítette a history-t hiba után | Loading placeholder key-ek prefixelve (`loading-${i}`); `v-if` guard az üres variáció v-for-ok köré |
+
+---
+
 ## Jövőbeli modulok (nem ütemezett)
 
 | Modul | Leírás |
