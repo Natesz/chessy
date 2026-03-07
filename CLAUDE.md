@@ -1,3 +1,4 @@
+<!-- MEMORY.md: C:\Users\local_user\.claude\projects\C--Users-local-user-Desktop-AI-project-chessy\memory\MEMORY.md (max 200 sor!) -->
 # CLAUDE.md – Chessy projekt fejlesztési irányelvek
 
 Ez a fájl minden munkamenetben automatikusan betöltődik. Tartsd be az itt leírtakat minden iterációban.
@@ -116,3 +117,9 @@ app/
 - Kerüld a technikai részleteket (nincs chess.js, Stockfish, WASM stb.)
 - Maximum 3-5 mondat iterációnként, 1-2 mondat patch-enként
 - Fájl: `README.md` (projekt gyökér)
+
+### `docs/plans/` fájl létrehozása (KÖTELEZŐ)
+- Minden terv implementálása után hozz létre egy fájlt a `docs/plans/` könyvtárban
+- Elnevezési konvenció: `iter-NN-main-<name>.md` (fő iteráció) vagy `iter-NN-patch-NN-<name>.md` (patch)
+- Tartalom: mi változott, melyik fájlokban, miért — tömören, technikai szinten
+- Ez az archív; a `docs/backlog.md` hivatkozhat rá

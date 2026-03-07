@@ -15,7 +15,7 @@ Ez a fájl minden iteráció és patch után frissítendő. Rögzíti, mi kész�
 
 ## Iteráció 01 – Interaktív sakktábla + Stockfish értékelés
 
-**PRD:** `docs/implementation/01-prd-chess.md`
+**PRD:** `docs/plans/iter-01-main-board-stockfish.md`
 **Státusz:** ✅ Kész (patchekkel)
 
 ### Implementált feature-ök
@@ -35,16 +35,17 @@ Ez a fájl minden iteráció és patch után frissítendő. Rögzíti, mi kész�
 
 | Patch | Hiba | Megoldás |
 |-------|------|----------|
-| `01-prd-chess-patch.md` | Turnváltás nem működött – fekete figurák nem léptek | `legalMoves` reaktív `computed`-ba helyezve (fen-függő) |
-| `01-prd-chess-patch-02.md` | Stockfish eval nem frissült | `vite.worker.format: 'es'` + `{ type: 'classic' }` konfliktus → `?url` import, `readyok` gate |
-| `01-prd-patch-03.md` | Worker betöltési hiba (generic Event) | COEP header (`require-corp`) blokkolta → `routeRules` törölve |
-| `01-prd-patch-04.md` | Eval fordított / csúszott értékelés | UCI score mindig a lépő fél szemszögéből jön → `colorMult` (`-1` ha fekete lép) |
+| `iter-01-patch-01-legal-moves-reactivity.md` | Turnváltás nem működött – fekete figurák nem léptek | `legalMoves` reaktív `computed`-ba helyezve (fen-függő) |
+| `iter-01-patch-02-stockfish-worker.md` | Stockfish eval nem frissült | `vite.worker.format: 'es'` + `{ type: 'classic' }` konfliktus → `?url` import, `readyok` gate |
+| `iter-01-patch-03-worker-coep.md` | Worker betöltési hiba (generic Event) | COEP header (`require-corp`) blokkolta → `routeRules` törölve |
+| `iter-01-patch-04-eval-reversed.md` | Eval fordított / csúszott értékelés | UCI score mindig a lépő fél szemszögéből jön → `colorMult` (`-1` ha fekete lép) |
+| `iter-01-patch-05-multipv-arrows.md` | Csak 1 elemzési sor jelent meg; legjobb lépés nyíl hiányzott | MultiPV 3 bekapcsolva; zöld nyíl a legjobb lépésre |
 
 ---
 
 ## Iteráció 02 – Elemzői mód (lépés history + fa navigáció)
 
-**PRD:** `docs/implementation/02-prd.md`
+**PRD:** `docs/plans/iter-02-main-move-history.md`
 **Státusz:** ✅ Kész
 
 ### Implementált feature-ök
@@ -77,27 +78,27 @@ Ez a fájl minden iteráció és patch után frissítendő. Rögzíti, mi kész�
 
 ## Iteráció 03 – FEN/PGN Betöltő + Sakkfigura Ikonok
 
-**PRD:** `docs/implementation/03-prd.md`
+**PRD:** `docs/plans/iter-03-main-fen-pgn-loader.md`
 **Státusz:** ✅ Kész
 
 ### Implementált feature-ök
 - FEN betöltő: egyedi kezdőállás beolvasása szövegből, chess.js validálással, hibaüzenettel
 - Jobb-klikkes annotációk (körök/nyilak) megőrzése Stockfish frissítéskor
-
-### Patch-ek
-
-| Patch | Hiba | Megoldás |
-|-------|------|----------|
-| `03-prd-patch-01.md` | FEN betöltés nem frissítette a táblát (Vue reaktivitás hiba) | `shallowRef` + `triggerRef(currentNode)` a `reset()`-ben |
-| `03-prd-patch-01.md` | Jobb-klikkes annotációk eltűntek Stockfish frissítésnél | `syncCg()` megőrzi a user shape-eket, csak `arrow1/2/3` brush-öket cseréli |
-| `03-prd-patch-01.md` | Élő FEN/PGN megjelenítés | `generatePgn(root)` utility (`app/utils/pgn.ts`); `ChessFenPgnLoader` props + watch-szal szinkronizálva |
-| `03-prd-patch-02.md` | FEN betöltés / Új elemzés után Stockfish nem elemez | `resetAnalysis()` dupla `stop` → dupla `bestmove` → generation counter desync; `stop` eltávolítva `resetAnalysis()`-ból |
-| `03-prd-patch-02.md` | Mellékágak zárójelben, nem Lichess-stílusban | `ChessMoveVariation.vue` fragment root, outer paren eltávolítva; `ChessMoveHistory.vue` row wrapper div |
 - PGN betöltő: teljes parti betöltése mellékágakkal együtt (rekurzív descent parser, `usePgnParser.ts`)
 - FEN/PGN panel: negyedik oszlop a layoutban (`ChessFenPgnLoader.vue`, `w-52`)
 - `useChessHistory.reset(startFen?)`: opcionális FEN paraméter, root node frissítése
 - Sakkfigura Unicode ikonok: N→♘, B→♗, R→♖, Q→♕, K→♔ az elemzési sorokban és historiban (`app/utils/san.ts`)
 - Layout max-width növelés: 900px → 1150px; tábla max-width: `calc(100vw - 500px)`
+
+### Patch-ek
+
+| Patch | Hiba | Megoldás |
+|-------|------|----------|
+| `iter-03-patch-01-fen-reactivity-annotations.md` | FEN betöltés nem frissítette a táblát (Vue reaktivitás hiba) | `shallowRef` + `triggerRef(currentNode)` a `reset()`-ben |
+| `iter-03-patch-01-fen-reactivity-annotations.md` | Jobb-klikkes annotációk eltűntek Stockfish frissítésnél | `syncCg()` megőrzi a user shape-eket, csak `arrow1/2/3` brush-öket cseréli |
+| `iter-03-patch-01-fen-reactivity-annotations.md` | Élő FEN/PGN megjelenítés | `generatePgn(root)` utility (`app/utils/pgn.ts`); `ChessFenPgnLoader` props + watch-szal szinkronizálva |
+| `iter-03-patch-02-stockfish-stop-bug.md` | FEN betöltés / Új elemzés után Stockfish nem elemez | `resetAnalysis()` dupla `stop` → dupla `bestmove` → generation counter desync; `stop` eltávolítva `resetAnalysis()`-ból |
+| `iter-03-patch-02-stockfish-stop-bug.md` | Mellékágak zárójelben, nem Lichess-stílusban | `ChessMoveVariation.vue` fragment root, outer paren eltávolítva; `ChessMoveHistory.vue` row wrapper div |
 
 ---
 
