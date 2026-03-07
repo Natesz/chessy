@@ -39,13 +39,21 @@ app/
   components/
     chess/
       ChessBoard.vue           # chessground wrapper (ClientOnly-ban)
-      StockfishEval.vue        # értékelési sáv + szám
-      ChessLayout.vue          # elrendezés
+      ChessStockfishEval.vue   # értékelési sáv + szám
+      ChessLayout.vue          # elrendezés (eval bar | tábla | history+elemzés | FEN/PGN)
+      ChessMoveHistory.vue     # lépés history főág
+      ChessMoveVariation.vue   # rekurzív mellékág megjelenítő
+      ChessAnalysisLines.vue   # Stockfish 3 elemzési sor
+      ChessFenPgnLoader.vue    # FEN + PGN betöltő panel (Iteráció 03)
   composables/
-    useChessGame.ts            # chess.js state, lépések, játék logika
-    useStockfish.ts            # Web Worker lifecycle, eval state
+    useChessHistory.ts         # fa struktúra alapú lépés state; reset(startFen?) shallowRef+triggerRef
+    useStockfish.ts            # Web Worker lifecycle, eval state, position cache
+    usePgnParser.ts            # rekurzív descent PGN parser; tokenize + parseTokens + variation handling
+  utils/
+    san.ts                     # formatSan: SAN → Unicode figuraikonok (auto-imported)
+    pgn.ts                     # generatePgn: MoveNode fa → PGN string (Lichess-kompatibilis)
   types/
-    chess.ts                   # ChessMove, EvalResult, GameState interfészek
+    chess.ts                   # ChessMove, EvalResult, GameState, MoveNode, VarLine
 ```
 
 ---
@@ -64,6 +72,21 @@ app/
 **SSR:**
 - A chess oldal SSR nélkül fut: `definePageMeta({ ssr: false })`
 - `ChessBoard.vue` `<ClientOnly>` wrapperbe kerül
+
+**Reaktivitás – useChessHistory reset():**
+- `currentNode = shallowRef<MoveNode>(root)` — nem reactive proxy, így `triggerRef(currentNode)` kell reset után
+- `root` plain object, properties mutálhatók: `root.fen = newFen` stb.
+- `triggerRef(currentNode)` kényszeríti a computed-ek (currentFen, currentGameState) újraszámítását
+
+**Stockfish generation counter:**
+- `resetAnalysis()` NEM küld `stop`-ot — dupla stop → dupla bestmove → filter desync
+- `sendAnalyze()` mindig küld `stop` + `go infinite`, ez elegendő
+- `gosSent`/`bestmovesReceived` counter szűri a stale üzeneteket
+
+**ChessMoveVariation – fragment root:**
+- Vue 3 multi-root template (fragment) — nincs wrapper div
+- Outer parens eltávolítva; nested sub-vars inline zárójelben
+- `defineOptions({ name: 'ChessMoveVariation' })` kötelező a rekurzív önreferenciához
 
 **chessground CSS** (mindhárom kell):
 - `chessground/assets/chessground.base.css`

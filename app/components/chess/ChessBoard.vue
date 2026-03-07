@@ -75,7 +75,12 @@ function computeArrows() {
 
 function syncCg() {
   if (!cg) return
-  const { shapes, brushes } = computeArrows()
+  const { shapes: stockfishShapes, brushes } = computeArrows()
+  // Preserve user-drawn circles/arrows (right-click); only replace our Stockfish arrows
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const userShapes = (cg.state.drawable.shapes as any[]).filter(
+    s => !['arrow1', 'arrow2', 'arrow3'].includes(s.brush),
+  )
   cg.set({
     fen: props.fen,
     turnColor: props.gameState.turn === 'w' ? 'white' : 'black',
@@ -85,7 +90,7 @@ function syncCg() {
     },
     check: props.gameState.isCheck,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    drawable: { shapes, brushes } as any,
+    drawable: { shapes: [...userShapes, ...stockfishShapes], brushes } as any,
   })
 }
 

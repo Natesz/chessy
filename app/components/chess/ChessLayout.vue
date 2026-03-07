@@ -12,6 +12,10 @@ defineProps<{
   root: MoveNode
   currentNode: MoveNode
   treeVersion: number
+  fenError?: string | null
+  pgnError?: string | null
+  currentFen: string
+  currentPgn: string
 }>()
 
 defineEmits<{
@@ -19,11 +23,13 @@ defineEmits<{
   reset: []
   navigateTo: [node: MoveNode]
   navigate: [direction: 'back' | 'forward' | 'start' | 'end']
+  loadFen: [fen: string]
+  loadPgn: [pgn: string]
 }>()
 </script>
 
 <template>
-  <div class="flex items-stretch gap-3 w-full" style="max-width: min(96vw, 900px); height: min(80vh, 600px)">
+  <div class="flex items-stretch gap-3 w-full" style="max-width: min(96vw, 1150px); height: min(80vh, 600px)">
     <!-- Eval bar -->
     <ClientOnly>
       <div class="flex" style="width: 28px">
@@ -36,7 +42,7 @@ defineEmits<{
 
     <!-- Board column -->
     <ClientOnly>
-      <div class="flex items-center" style="width: min(80vh, 540px); max-width: calc(100vw - 380px)">
+      <div class="flex items-center" style="width: min(80vh, 540px); max-width: calc(100vw - 500px)">
         <ChessBoard
           :fen="fen"
           :game-state="gameState"
@@ -112,5 +118,15 @@ defineEmits<{
         <div class="flex-1 bg-gray-800 rounded-lg" />
       </template>
     </ClientOnly>
+
+    <!-- FEN/PGN loader panel -->
+    <ChessFenPgnLoader
+      :fen-error="fenError"
+      :pgn-error="pgnError"
+      :current-fen="currentFen"
+      :current-pgn="currentPgn"
+      @load-fen="$emit('loadFen', $event)"
+      @load-pgn="$emit('loadPgn', $event)"
+    />
   </div>
 </template>

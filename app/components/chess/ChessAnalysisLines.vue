@@ -15,45 +15,47 @@ function formatScore(score: EvalResult): string {
 </script>
 
 <template>
-  <div class="flex flex-col gap-2">
-    <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
+  <div class="flex flex-col gap-1.5 shrink-0">
+    <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider">
       Elemzés
     </div>
 
-    <!-- Loading state -->
-    <template v-if="isAnalyzing && !lines.length">
-      <div v-for="i in 3" :key="`loading-${i}`" class="h-8 rounded bg-gray-800 animate-pulse" />
-    </template>
-
-    <!-- Lines -->
+    <!-- Mindig 3 slot renderelődik → stabil magasság, nem ugrik a layout -->
     <div
-      v-for="line in lines"
-      :key="line.multipv"
-      class="flex items-baseline gap-2"
-      :class="line.multipv === 1 ? 'opacity-100' : 'opacity-50'"
+      v-for="i in 3"
+      :key="i"
+      class="flex items-baseline gap-2 min-h-[28px]"
+      :class="i === 1 ? 'opacity-100' : 'opacity-50'"
     >
-      <!-- Score badge -->
-      <span
-        class="shrink-0 text-xs font-bold font-mono tabular-nums px-1.5 py-0.5 rounded"
-        :class="[
-          line.score.type === 'mate'
-            ? 'bg-red-900 text-red-300'
-            : line.score.value >= 0
-              ? 'bg-gray-700 text-gray-100'
-              : 'bg-gray-700 text-gray-400',
-          line.multipv === 1 ? 'text-sm' : 'text-xs',
-        ]"
-      >
-        {{ formatScore(line.score) }}
-      </span>
+      <!-- Van adat ehhez a sorhoz -->
+      <template v-if="lines[i - 1]">
+        <span
+          class="shrink-0 font-bold font-mono tabular-nums px-1.5 py-0.5 rounded"
+          :class="[
+            lines[i - 1].score.type === 'mate'
+              ? 'bg-red-900 text-red-300'
+              : lines[i - 1].score.value >= 0
+                ? 'bg-gray-700 text-gray-100'
+                : 'bg-gray-700 text-gray-400',
+            i === 1 ? 'text-sm' : 'text-xs',
+          ]"
+        >
+          {{ formatScore(lines[i - 1].score) }}
+        </span>
+        <span
+          class="font-mono leading-snug break-all"
+          :class="i === 1 ? 'text-sm font-medium text-white' : 'text-xs text-gray-300'"
+        >
+          {{ lines[i - 1].moves.map(m => formatSan(m)).join(' ') }}
+        </span>
+      </template>
 
-      <!-- Moves -->
-      <span
-        class="font-mono text-gray-300 leading-snug break-all"
-        :class="line.multipv === 1 ? 'text-sm font-medium text-white' : 'text-xs'"
-      >
-        {{ line.moves.join(' ') }}
-      </span>
+      <!-- Elemzés folyamatban, még nincs adat ehhez a sorhoz -->
+      <template v-else-if="isAnalyzing">
+        <div class="flex-1 h-5 rounded bg-gray-700 animate-pulse" />
+      </template>
+
+      <!-- Nincs elemzés – üres slot tartja a helyet -->
     </div>
   </div>
 </template>

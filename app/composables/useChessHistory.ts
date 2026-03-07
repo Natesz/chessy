@@ -16,7 +16,7 @@ export function useChessHistory() {
   }
 
   const root = makeNode(new Chess().fen(), null, null, 1, 'w')
-  const currentNode = ref<MoveNode>(root)
+  const currentNode = shallowRef<MoveNode>(root)
   const treeVersion = ref(0)
 
   const currentFen = computed(() => currentNode.value.fen)
@@ -103,10 +103,17 @@ export function useChessHistory() {
     currentNode.value = node
   }
 
-  function reset() {
+  function reset(startFen?: string) {
+    const fen = startFen ?? new Chess().fen()
+    if (startFen) new Chess(fen) // throws if invalid FEN
+    const fenParts = fen.split(' ')
+    root.fen = fen
+    root.moveNumber = parseInt(fenParts[5])
+    root.color = fenParts[1] as 'w' | 'b'
     root.children = []
     treeVersion.value++
     currentNode.value = root
+    triggerRef(currentNode) // force update even if currentNode was already pointing to root
   }
 
   return {

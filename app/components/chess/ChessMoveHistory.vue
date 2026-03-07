@@ -92,7 +92,7 @@ watch(
             : 'text-gray-200 hover:bg-gray-700'"
           @click="emit('navigateTo', pair.white)"
         >
-          {{ pair.white.move?.san }}
+          {{ formatSan(pair.white.move?.san ?? '') }}
         </button>
 
         <button
@@ -104,31 +104,39 @@ watch(
             : 'text-gray-200 hover:bg-gray-700'"
           @click="emit('navigateTo', pair.black)"
         >
-          {{ pair.black.move?.san }}
+          {{ formatSan(pair.black.move?.san ?? '') }}
         </button>
         <span v-else class="w-[45%]" />
       </div>
 
       <!-- Fehér mellékágak (alternatív fehér lépések ennél a pozíciónál) -->
       <template v-if="pair.whiteVarLines.length">
-        <ChessMoveVariation
+        <div
           v-for="(varLine, i) in pair.whiteVarLines"
           :key="`w${i}`"
-          :var-line="varLine"
-          :current-node-id="currentNode.id"
-          @navigate-to="emit('navigateTo', $event)"
-        />
+          class="pl-[29px] flex flex-wrap items-baseline gap-x-0.5 leading-5 py-0.5 text-xs text-gray-500 font-mono"
+        >
+          <ChessMoveVariation
+            :var-line="varLine"
+            :current-node-id="currentNode.id"
+            @navigate-to="emit('navigateTo', $event)"
+          />
+        </div>
       </template>
 
       <!-- Fekete mellékágak (alternatív fekete válaszok fehér lépése után) -->
       <template v-if="pair.blackVarLines.length">
-        <ChessMoveVariation
+        <div
           v-for="(varLine, i) in pair.blackVarLines"
           :key="`b${i}`"
-          :var-line="varLine"
-          :current-node-id="currentNode.id"
-          @navigate-to="emit('navigateTo', $event)"
-        />
+          class="pl-[29px] flex flex-wrap items-baseline gap-x-0.5 leading-5 py-0.5 text-xs text-gray-500 font-mono"
+        >
+          <ChessMoveVariation
+            :var-line="varLine"
+            :current-node-id="currentNode.id"
+            @navigate-to="emit('navigateTo', $event)"
+          />
+        </div>
       </template>
     </div>
   </div>

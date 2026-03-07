@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { ChessMove, MoveNode } from '~/types/chess'
+import { usePgnParser } from '~/composables/usePgnParser'
 
 definePageMeta({ ssr: false })
 
@@ -9,10 +10,24 @@ const {
   addMove, navigateBack, navigateForward, navigateToStart, navigateToMainEnd, navigateTo, reset,
 } = useChessHistory()
 
-const { evalResult, isAnalyzing, analysisLines, init, analyze, destroy } = useStockfish()
+const { evalResult, isAnalyzing, analysisLines, init, analyze, resetAnalysis, destroy } = useStockfish()
 
-// Stockfish elemzés indítása minden pozícióváltáskor
-watch(currentFen, fen => analyze(fen))
+const { parsePgn } = usePgnParser({ currentFen, currentNode, addMove, navigateBack, navigateTo, reset })
+
+const fenError = ref<string | null>(null)
+const pgnError = ref<string | null>(null)
+
+const currentPgn = computed(() => {
+  treeVersion.value // reaktív függőség
+  return generatePgn(root)
+})
+
+// Stockfish elemzés indítása minden pozícióváltáskor (debounce: gyors navigációnál csak az utolsó pozíció elemzése)
+let analyzeDebounce: ReturnType<typeof setTimeout> | null = null
+watch(currentFen, (fen) => {
+  if (analyzeDebounce) clearTimeout(analyzeDebounce)
+  analyzeDebounce = setTimeout(() => analyze(fen), 150)
+})
 
 function handleMove(move: ChessMove) {
   addMove(move.from, move.to, move.promotion ?? 'q')
@@ -30,7 +45,37 @@ function handleNavigateTo(node: MoveNode) {
 }
 
 function handleReset() {
+  if (analyzeDebounce) { clearTimeout(analyzeDebounce); analyzeDebounce = null }
+  resetAnalysis()
   reset()
+  analyze(currentFen.value)
+}
+
+function handleLoadFen(fen: string) {
+  fenError.value = null
+  if (analyzeDebounce) { clearTimeout(analyzeDebounce); analyzeDebounce = null }
+  try {
+    resetAnalysis()
+    reset(fen)
+    analyze(currentFen.value)
+  }
+  catch {
+    fenError.value = 'Érvénytelen FEN'
+  }
+}
+
+function handleLoadPgn(pgn: string) {
+  pgnError.value = null
+  if (analyzeDebounce) { clearTimeout(analyzeDebounce); analyzeDebounce = null }
+  resetAnalysis()
+  const err = parsePgn(pgn)
+  if (err) {
+    pgnError.value = err
+  }
+  else {
+    navigateToStart()
+    analyze(currentFen.value)
+  }
 }
 
 // Billentyűzet navigáció
@@ -50,6 +95,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
+  if (analyzeDebounce) clearTimeout(analyzeDebounce)
   destroy()
   window.removeEventListener('keydown', handleKeydown)
 })
@@ -69,10 +115,16 @@ onUnmounted(() => {
       :root="root"
       :current-node="currentNode"
       :tree-version="treeVersion"
+      :fen-error="fenError"
+      :pgn-error="pgnError"
+      :current-fen="currentFen"
+      :current-pgn="currentPgn"
       @move="handleMove"
       @reset="handleReset"
       @navigate="handleNavigate"
       @navigate-to="handleNavigateTo"
+      @load-fen="handleLoadFen"
+      @load-pgn="handleLoadPgn"
     />
   </div>
 </template>

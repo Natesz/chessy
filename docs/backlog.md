@@ -68,6 +68,36 @@ Ez a fájl minden iteráció és patch után frissítendő. Rögzíti, mi kész�
 | `02-prd-patch-01.md` | Mellékágban fekete lépés eltűnt; mellékágak zsúfolt középre-behúzása; hiányzó hierarchikus nesting | `ChessMoveVariation.vue` rekurzív komponens; `buildVarLine` fa-bejárás; inline/block megjelenítés mélység szerint; `pl-2` bal oldali igazítás |
 | `02-prd-patch-02.md` | Komponens nem töltődött be (auto-import kihagyás); runtime `__vnode` null hiba navigációkor; rekurzív önreferencia nem működött; index-kulcs instabilitás; `idCounter` reset ID-ütközés | Explicit import; `defineOptions({ name })`; stabil node.id kulcsok; `idCounter` reset eltávolítva |
 | `02-prd-patch-03.md` | `__vnode` null runtime hiba navigáció közben (nem determinisztikus); `Új elemzés` nem ürítette a history-t hiba után | Loading placeholder key-ek prefixelve (`loading-${i}`); `v-if` guard az üres variáció v-for-ok köré |
+| `02-prd-patch-04.md` | Gyors görgetésnél `__vnode` null hiba – stale Stockfish info/bestmove üzenetek felülírták az `analysisLines`-t és prematurán kikapcsolták az `isAnalyzing` flaget | Generation counter (`gosSent` / `bestmovesReceived`) `useStockfish.ts`-ben; stale üzenetek szűrése |
+| `02-prd-patch-05.md` | Elemzési panel magassága ugrált (0 sor ↔ 3 sor), a history rész le-föl ugrált; navigálásnál feleslegesen újraelemzett minden közbülső pozíciót | `ChessAnalysisLines.vue`: mindig 3 slot renderelődik (`min-h-[28px]`, üres ha nincs adat), `shrink-0` a layout-ban; 150ms debounce a `watch(currentFen)` hívásra |
+| `02-prd-patch-06.md` | Ismételten meglátogatott pozíciók újraelemzése felesleges CPU használatot okozott; cache csak depth 20-nál mentett; rossz szín/fordított értékelés cache-elt pozícióknál | Position cache redesign: `saveCurrentToCache` navigáláskor menti a checkpointot; `go infinite`; cache hit → azonnali megjelenítés + folytatás (`continueFromCache`, sorok nem törlődnek); depth 15 → ∞ |
+| `02-prd-patch-07.md` | "Új elemzés" gombra a Stockfish cache nem törlődött, régi pozíciók elemzése jelent meg | `resetAnalysis()` a `useStockfish`-ben: cache törlés + display reset + stop; `handleReset` chess.vue-ban: debounce cancel + resetAnalysis + azonnali re-analyze |
+
+---
+
+## Iteráció 03 – FEN/PGN Betöltő + Sakkfigura Ikonok
+
+**PRD:** `docs/implementation/03-prd.md`
+**Státusz:** ✅ Kész
+
+### Implementált feature-ök
+- FEN betöltő: egyedi kezdőállás beolvasása szövegből, chess.js validálással, hibaüzenettel
+- Jobb-klikkes annotációk (körök/nyilak) megőrzése Stockfish frissítéskor
+
+### Patch-ek
+
+| Patch | Hiba | Megoldás |
+|-------|------|----------|
+| `03-prd-patch-01.md` | FEN betöltés nem frissítette a táblát (Vue reaktivitás hiba) | `shallowRef` + `triggerRef(currentNode)` a `reset()`-ben |
+| `03-prd-patch-01.md` | Jobb-klikkes annotációk eltűntek Stockfish frissítésnél | `syncCg()` megőrzi a user shape-eket, csak `arrow1/2/3` brush-öket cseréli |
+| `03-prd-patch-01.md` | Élő FEN/PGN megjelenítés | `generatePgn(root)` utility (`app/utils/pgn.ts`); `ChessFenPgnLoader` props + watch-szal szinkronizálva |
+| `03-prd-patch-02.md` | FEN betöltés / Új elemzés után Stockfish nem elemez | `resetAnalysis()` dupla `stop` → dupla `bestmove` → generation counter desync; `stop` eltávolítva `resetAnalysis()`-ból |
+| `03-prd-patch-02.md` | Mellékágak zárójelben, nem Lichess-stílusban | `ChessMoveVariation.vue` fragment root, outer paren eltávolítva; `ChessMoveHistory.vue` row wrapper div |
+- PGN betöltő: teljes parti betöltése mellékágakkal együtt (rekurzív descent parser, `usePgnParser.ts`)
+- FEN/PGN panel: negyedik oszlop a layoutban (`ChessFenPgnLoader.vue`, `w-52`)
+- `useChessHistory.reset(startFen?)`: opcionális FEN paraméter, root node frissítése
+- Sakkfigura Unicode ikonok: N→♘, B→♗, R→♖, Q→♕, K→♔ az elemzési sorokban és historiban (`app/utils/san.ts`)
+- Layout max-width növelés: 900px → 1150px; tábla max-width: `calc(100vw - 500px)`
 
 ---
 

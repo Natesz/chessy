@@ -9,6 +9,20 @@ export function useStockfish() {
   let pendingFen: string | null = null
   let analyzingColor: 'w' | 'b' = 'w'
   let currentFen = ''
+  let gosSent = 0
+  let bestmovesReceived = 0
+
+  interface CachedEntry { lines: AnalysisLine[], evalResult: EvalResult | null, depth: number }
+  const analysisCache = new Map<string, CachedEntry>()
+
+  function saveCurrentToCache() {
+    if (!currentFen || analysisLines.value.length === 0) return
+    const depth = evalResult.value?.depth ?? 0
+    const existing = analysisCache.get(currentFen)
+    if (!existing || existing.depth < depth) {
+      analysisCache.set(currentFen, { lines: [...analysisLines.value], evalResult: evalResult.value, depth })
+    }
+  }
 
   const evalResult = ref<EvalResult | null>(null)
   const isAnalyzing = ref(false)
@@ -34,16 +48,20 @@ export function useStockfish() {
     return san
   }
 
-  function sendAnalyze(fen: string) {
+  function sendAnalyze(fen: string, continueFromCache = false) {
     if (!worker) return
+    saveCurrentToCache()  // Navigálás előtt elmentjük az aktuális pozíció elemzését
+    gosSent++
     analyzingColor = fen.split(' ')[1] as 'w' | 'b'
     currentFen = fen
-    analysisLines.value = []
+    if (!continueFromCache) {
+      analysisLines.value = []  // Csak új pozíciónál töröljük – cache folytatásnál nem villódzik
+    }
     isAnalyzing.value = true
     worker.postMessage('stop')
     worker.postMessage('setoption name MultiPV value 3')
     worker.postMessage(`position fen ${fen}`)
-    worker.postMessage('go depth 15')
+    worker.postMessage('go infinite')
   }
 
   function init() {
@@ -68,6 +86,7 @@ export function useStockfish() {
       }
 
       if (line.startsWith('info') && (line.includes('score cp') || line.includes('score mate'))) {
+        if (bestmovesReceived !== gosSent - 1) return
         const colorMult = analyzingColor === 'b' ? -1 : 1
         const multipvMatch = line.match(/multipv (\d+)/)
         const depthMatch = line.match(/depth (\d+)/)
@@ -119,7 +138,10 @@ export function useStockfish() {
       }
 
       if (line.startsWith('bestmove')) {
-        isAnalyzing.value = false
+        bestmovesReceived++
+        if (bestmovesReceived === gosSent) {
+          isAnalyzing.value = false
+        }
       }
     }
 
@@ -131,6 +153,16 @@ export function useStockfish() {
     if (!worker) init()
     if (!worker) return
 
+    const cached = analysisCache.get(fen)
+    if (cached) {
+      // Cache hit: azonnali megjelenítés, majd go infinite folytatás (nem törli a sorokat)
+      analysisLines.value = cached.lines
+      if (cached.evalResult) evalResult.value = cached.evalResult
+      if (!isReady) { pendingFen = fen; return }
+      sendAnalyze(fen, true)
+      return
+    }
+
     if (!isReady) {
       pendingFen = fen
       return
@@ -141,6 +173,16 @@ export function useStockfish() {
 
   function stop() {
     worker?.postMessage('stop')
+    isAnalyzing.value = false
+  }
+
+  // "Új elemzés" gombra hívandó: törli a cache-t és a megjelenített adatokat
+  // NE küldjünk 'stop'-ot – sendAnalyze mindig küld egyet, és a dupla stop
+  // dupla bestmove választ generál, ami miatt az egész elemzés szűrve lesz
+  function resetAnalysis() {
+    analysisCache.clear()
+    analysisLines.value = []
+    evalResult.value = null
     isAnalyzing.value = false
   }
 
@@ -159,6 +201,7 @@ export function useStockfish() {
     init,
     analyze,
     stop,
+    resetAnalysis,
     destroy,
   }
 }
