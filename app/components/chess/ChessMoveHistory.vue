@@ -67,7 +67,7 @@ watch(
 </script>
 
 <template>
-  <div ref="historyEl" class="overflow-y-auto flex-1 min-h-0 text-sm font-mono">
+  <div ref="historyEl" data-testid="move-history" class="overflow-y-auto flex-1 min-h-0 text-sm font-mono">
     <div
       v-if="!pairs.length"
       class="text-gray-600 text-xs text-center py-6"

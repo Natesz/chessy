@@ -28,6 +28,7 @@ watch(() => props.currentPgn, (pgn) => { pgnInput.value = pgn })
       </div>
       <input
         v-model="fenInput"
+        data-testid="fen-input"
         type="text"
         class="shrink-0 w-full bg-gray-700 text-gray-100 text-xs font-mono rounded px-2 py-1.5 border border-gray-600 focus:border-amber-500 focus:outline-none"
         placeholder="Illeszd be a FEN-t..."
@@ -36,6 +37,7 @@ watch(() => props.currentPgn, (pgn) => { pgnInput.value = pgn })
         {{ fenError }}
       </div>
       <button
+        data-testid="fen-load-btn"
         class="shrink-0 py-1.5 rounded bg-blue-700 hover:bg-blue-600 active:bg-blue-800 text-white font-semibold text-xs transition-colors"
         @click="emit('loadFen', fenInput)"
       >
@@ -52,6 +54,7 @@ watch(() => props.currentPgn, (pgn) => { pgnInput.value = pgn })
       </div>
       <textarea
         v-model="pgnInput"
+        data-testid="pgn-input"
         class="flex-1 min-h-0 w-full bg-gray-700 text-gray-100 text-xs font-mono rounded px-2 py-1.5 border border-gray-600 focus:border-amber-500 focus:outline-none resize-none"
         placeholder="Illeszd be a PGN-t..."
       />
@@ -59,6 +62,7 @@ watch(() => props.currentPgn, (pgn) => { pgnInput.value = pgn })
         {{ pgnError }}
       </div>
       <button
+        data-testid="pgn-load-btn"
         class="shrink-0 py-1.5 rounded bg-blue-700 hover:bg-blue-600 active:bg-blue-800 text-white font-semibold text-xs transition-colors"
         @click="emit('loadPgn', pgnInput)"
       >

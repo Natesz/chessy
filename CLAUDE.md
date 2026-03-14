@@ -10,7 +10,7 @@ Ez a fájl minden munkamenetben automatikusan betöltődik. Tartsd be az itt le�
 - **TypeScript everywhere, strict mode** – minden fájl `.ts` vagy `.vue` (script lang="ts")
 - **Tailwind CSS** az elsődleges stílus, minimális custom CSS
 - **Nuxt 4**, `srcDir = app/` – minden forráskód az `app/` könyvtárban van
-- **Nincsenek tesztek** – Vitest, Jest, Playwright, Cypress tilos
+- **Playwright e2e tesztek megengedve** (`tests/e2e/`) – Vitest, Jest, Cypress továbbra is tilos
 - **Desktop-first layout**
 - Komponensek: `app/components/chess/` alatt
 
@@ -123,3 +123,9 @@ app/
 - Elnevezési konvenció: `iter-NN-main-<name>.md` (fő iteráció) vagy `iter-NN-patch-NN-<name>.md` (patch)
 - Tartalom: mi változott, melyik fájlokban, miért — tömören, technikai szinten
 - Ez az archív; a `docs/backlog.md` hivatkozhat rá
+
+### Git commit készítése (KÖTELEZŐ)
+- Minden iteráció és patch implementálása után készíts egy commitot
+- Commit message formátum: `iter-NN: rövid leírás` (pl. `iter-04: play mode, top nav, playwright`) vagy `iter-NN-patch-MM: rövid leírás`
+- Legyen rövid és tömör — egy sor, max 72 karakter
+- Az összes érintett fájl kerüljön bele (`git add` a módosított/új fájlokra)

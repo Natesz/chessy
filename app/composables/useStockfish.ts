@@ -186,6 +186,40 @@ export function useStockfish() {
     isAnalyzing.value = false
   }
 
+  function getBestMove(fen: string, depth: number): Promise<string> {
+    return new Promise((resolve, reject) => {
+      if (!worker) {
+        reject(new Error('Worker not initialized'))
+        return
+      }
+
+      const timeoutId = setTimeout(() => reject(new Error('getBestMove timeout')), 10000)
+      const targetGeneration = gosSent + 1
+      gosSent++
+
+      const prevOnMessage = worker.onmessage
+      worker.onmessage = (event: MessageEvent<string>) => {
+        // Also run original handler to keep analysis state coherent
+        prevOnMessage?.call(worker!, event)
+
+        const line = event.data
+        if (line.startsWith('bestmove') && bestmovesReceived === targetGeneration) {
+          clearTimeout(timeoutId)
+          worker!.onmessage = prevOnMessage
+          const parts = line.split(' ')
+          const uci = parts[1]
+          if (uci && uci !== '(none)') resolve(uci)
+          else reject(new Error('No move returned'))
+        }
+      }
+
+      worker.postMessage('stop')
+      worker.postMessage('setoption name MultiPV value 1')
+      worker.postMessage(`position fen ${fen}`)
+      worker.postMessage(`go depth ${depth}`)
+    })
+  }
+
   function destroy() {
     worker?.terminate()
     worker = null
@@ -201,6 +235,7 @@ export function useStockfish() {
     init,
     analyze,
     stop,
+    getBestMove,
     resetAnalysis,
     destroy,
   }

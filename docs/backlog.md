@@ -102,6 +102,54 @@ Ez a fájl minden iteráció és patch után frissítendő. Rögzíti, mi kész�
 
 ---
 
+## Iteráció 04 – Top nav + Play mód + Playwright tesztek
+
+**PRD:** `docs/plans/iter-04-main-play-mode.md`
+**Státusz:** ✅ Kész
+
+### Implementált feature-ök
+
+#### Patch A – Nyílszín módosítás
+- Stockfish elemzési nyilak: `#4A90E2` → `#8899BB` (szürke-kék)
+- arrow1 opacity: 0.8 → 0.65; arrow2/3 opacity tartomány csökkentve (halványabb, kevésbé zavaró)
+
+#### 04-A – Top Navigation + Routing
+- `app/layouts/default.vue`: navigációs sáv + `<slot />` wrapper
+- `app/components/AppNav.vue`: ♟ Chessy logo · Elemzés · Játék · Puzzle (disabled)
+- `app/pages/analysis.vue`: `chess.vue` tartalma új route-on; `<h1>` eltávolítva (layout veszi át)
+- `app/pages/index.vue`: `/analysis`-ra redirect
+- `app/pages/chess.vue`: `/analysis`-ra redirect (backward compat)
+- Aktív tab: amber border-bottom
+
+#### 04-B – Playwright E2E tesztek
+- `playwright.config.ts`: Chromium, baseURL 3000, webServer nuxt dev
+- `tests/e2e/analysis.spec.ts`: PGN betöltés + gomb-navigáció
+- `tests/e2e/navigation.spec.ts`: billentyű-navigáció
+- `tests/e2e/fen-pgn.spec.ts`: FEN betöltés + Unicode figuraikonok
+- `data-testid` attribútumok: `fen-input`, `fen-load-btn`, `pgn-input`, `pgn-load-btn`, `move-history`, `nav-start`, `nav-back`, `nav-forward`
+- CLAUDE.md frissítve: Playwright engedélyezve
+
+#### 04-C – Play mód (AI + 1v1)
+- `app/pages/play.vue`: játék főoldal (ssr: false), AI/multiplayer toggle
+- `app/components/chess/ChessGame.vue`: játék layout (tábla + kontroll panel)
+- `app/components/chess/ChessGameControls.vue`: setup/playing/finished fázis UI
+- `app/composables/useStockfishPlayer.ts`: depth-limited AI move composable
+- `app/composables/useGameRoom.ts`: Supabase Realtime 1v1 szoba (createRoom, joinRoom, sendMove, subscribe)
+- `app/types/game.ts`: GameRoom, PlayerToken, RoomStatus típusok
+- `useStockfish.ts`: `getBestMove(fen, depth)` hozzáadva
+- `useChessGame.ts`: `makeMove()` visszatér `string | false` (SAN)
+- `ChessBoard.vue`: új props – `orientation`, `movableColor`, `showArrows`
+- `nuxt.config.ts`: Supabase runtimeConfig (`SUPABASE_URL`, `SUPABASE_ANON_KEY`)
+- `@supabase/supabase-js` és `@playwright/test` hozzáadva
+
+### Patch-ek
+
+| Patch | Hiba | Megoldás |
+|-------|------|----------|
+| – | – | – |
+
+---
+
 ## Jövőbeli modulok (nem ütemezett)
 
 | Modul | Leírás |

@@ -84,6 +84,7 @@ defineEmits<{
 
           <div class="flex gap-1">
             <button
+              data-testid="nav-start"
               class="w-8 h-7 flex items-center justify-center rounded bg-gray-700 hover:bg-gray-600 text-gray-200 text-sm font-bold transition-colors"
               title="Elejére (↑)"
               @click="$emit('navigate', 'start')"
@@ -91,6 +92,7 @@ defineEmits<{
               «
             </button>
             <button
+              data-testid="nav-back"
               class="w-8 h-7 flex items-center justify-center rounded bg-gray-700 hover:bg-gray-600 text-gray-200 text-sm font-bold transition-colors"
               title="Vissza (←)"
               @click="$emit('navigate', 'back')"
@@ -98,6 +100,7 @@ defineEmits<{
               ‹
             </button>
             <button
+              data-testid="nav-forward"
               class="w-8 h-7 flex items-center justify-center rounded bg-gray-700 hover:bg-gray-600 text-gray-200 text-sm font-bold transition-colors"
               title="Előre (→)"
               @click="$emit('navigate', 'forward')"

@@ -31,6 +31,15 @@ Az alkalmazás jelenleg egy teljes értékű sakktáblát tartalmaz, amelyen:
 
 ---
 
+## Legújabb fejlesztések (Iteráció 04)
+
+- **Navigációs menü**: az oldal tetején megjelent egy menüsáv — Elemzés, Játék és (hamarosan) Puzzle módok között lehet váltani
+- **Játék mód**: a /play oldalon lehet játszani a Stockfish motor ellen, vagy élő 1v1 játékot indítani megosztható link segítségével (Supabase alapú szinkronizálás)
+- **Halványabb elemzési nyilak**: a Stockfish nyilak visszafogottabb, szürke-kék árnyalatot kaptak, kevésbé vonják el a figyelmet
+- **Automatizált tesztek**: e2e tesztek kerültek a projektbe, amelyek ellenőrzik a FEN/PGN betöltést és a navigációt
+
+---
+
 ## Tervezett funkciók
 
 - Ellenfél-felkészítő (korábbi partik elemzése)

@@ -37,12 +37,12 @@ export function useChessGame() {
     }
   }
 
-  function makeMove(move: ChessMove): boolean {
+  function makeMove(move: ChessMove): string | false {
     try {
       const result = chess.move(move)
       if (result) {
         syncState()
-        return true
+        return result.san
       }
     }
     catch {
