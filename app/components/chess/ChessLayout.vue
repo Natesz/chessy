@@ -43,35 +43,20 @@ defineEmits<{
       </template>
     </ClientOnly>
 
-    <!-- Board column -->
+    <!-- Board column — single instance, responsive sizing via CSS -->
     <ClientOnly>
-      <div
-        class="w-full max-w-[600px] mx-auto lg:mx-0 lg:w-auto lg:max-w-none lg:flex lg:items-center"
-        :style="{ width: undefined }"
-      >
-        <div class="w-full aspect-square lg:hidden">
-          <ChessBoard
-            :fen="fen"
-            :game-state="gameState"
-            :legal-moves="legalMoves"
-            :analysis-lines="analysisLines"
-            @move="$emit('move', $event)"
-            @navigate="$emit('navigate', $event)"
-          />
-        </div>
-        <div class="hidden lg:block" style="width: min(80vh, 540px); max-width: calc(100vw - 500px)">
-          <ChessBoard
-            :fen="fen"
-            :game-state="gameState"
-            :legal-moves="legalMoves"
-            :analysis-lines="analysisLines"
-            @move="$emit('move', $event)"
-            @navigate="$emit('navigate', $event)"
-          />
-        </div>
+      <div class="board-col mx-auto lg:mx-0 lg:flex lg:items-center shrink-0">
+        <ChessBoard
+          :fen="fen"
+          :game-state="gameState"
+          :legal-moves="legalMoves"
+          :analysis-lines="analysisLines"
+          @move="$emit('move', $event)"
+          @navigate="$emit('navigate', $event)"
+        />
       </div>
       <template #fallback>
-        <div class="w-full max-w-[600px] mx-auto aspect-square bg-gray-800 rounded animate-pulse lg:mx-0 lg:max-w-none" style="width: min(80vh, 540px)" />
+        <div class="board-col mx-auto aspect-square bg-gray-800 rounded animate-pulse lg:mx-0" />
       </template>
     </ClientOnly>
 
@@ -152,3 +137,16 @@ defineEmits<{
     />
   </div>
 </template>
+
+<style scoped>
+.board-col {
+  width: 100%;
+  max-width: min(100vw - 16px, 600px);
+}
+@media (min-width: 1024px) {
+  .board-col {
+    width: min(80vh, 540px);
+    max-width: calc(100vw - 500px);
+  }
+}
+</style>

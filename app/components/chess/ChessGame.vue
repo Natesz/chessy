@@ -108,39 +108,23 @@ defineExpose({ applyOpponentMove, fen, gamePgn })
     class="flex flex-col lg:flex-row lg:items-stretch gap-4 w-full px-2 lg:px-0 mx-auto lg:h-[min(80vh,600px)]"
     style="max-width: min(95vw, 1100px)"
   >
-    <!-- Board column -->
-    <div class="w-full max-w-[600px] mx-auto lg:mx-0 lg:max-w-none lg:shrink-0" style="width: auto">
+    <!-- Board column — single instance, responsive sizing via CSS -->
+    <div class="board-col mx-auto lg:mx-0 shrink-0">
       <div class="text-xs text-gray-400 text-center py-0.5">
         {{ playerColor === 'white' ? 'Fekete' : 'Fehér' }}
       </div>
 
       <ClientOnly>
-        <!-- Mobile board: full width -->
-        <div class="w-full aspect-square lg:hidden">
-          <ChessBoard
-            :fen="fen"
-            :game-state="gameState"
-            :legal-moves="legalMoves"
-            :analysis-lines="[]"
-            :orientation="playerColor"
-            :movable-color="phase === 'playing' ? playerColor : 'none'"
-            :show-arrows="false"
-            @move="e => handleMove(e.from, e.to, e.promotion)"
-          />
-        </div>
-        <!-- Desktop board: fixed size -->
-        <div class="hidden lg:block" style="width: min(80vh, 520px); max-width: calc(100vw - 490px)">
-          <ChessBoard
-            :fen="fen"
-            :game-state="gameState"
-            :legal-moves="legalMoves"
-            :analysis-lines="[]"
-            :orientation="playerColor"
-            :movable-color="phase === 'playing' ? playerColor : 'none'"
-            :show-arrows="false"
-            @move="e => handleMove(e.from, e.to, e.promotion)"
-          />
-        </div>
+        <ChessBoard
+          :fen="fen"
+          :game-state="gameState"
+          :legal-moves="legalMoves"
+          :analysis-lines="[]"
+          :orientation="playerColor"
+          :movable-color="phase === 'playing' ? playerColor : 'none'"
+          :show-arrows="false"
+          @move="e => handleMove(e.from, e.to, e.promotion)"
+        />
         <template #fallback>
           <div class="w-full bg-gray-800 rounded animate-pulse" style="aspect-ratio: 1" />
         </template>
@@ -194,3 +178,16 @@ defineExpose({ applyOpponentMove, fen, gamePgn })
     </div>
   </div>
 </template>
+
+<style scoped>
+.board-col {
+  width: 100%;
+  max-width: min(100vw - 16px, 600px);
+}
+@media (min-width: 1024px) {
+  .board-col {
+    width: min(80vh, 520px);
+    max-width: calc(100vw - 490px);
+  }
+}
+</style>

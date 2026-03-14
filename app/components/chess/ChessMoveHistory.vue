@@ -59,8 +59,18 @@ watch(
   () => props.currentNode,
   (node) => {
     nextTick(() => {
-      const el = historyEl.value?.querySelector<HTMLElement>(`[data-node-id="${node.id}"]`)
-      el?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+      const container = historyEl.value
+      const el = container?.querySelector<HTMLElement>(`[data-node-id="${node.id}"]`)
+      if (!el || !container) return
+      // Scroll only the history container, not the page
+      const elTop = el.offsetTop
+      const elH = el.offsetHeight
+      if (elTop < container.scrollTop) {
+        container.scrollTop = elTop
+      }
+      else if (elTop + elH > container.scrollTop + container.clientHeight) {
+        container.scrollTop = elTop + elH - container.clientHeight
+      }
     })
   },
 )
