@@ -31,9 +31,9 @@ Az alkalmazás jelenleg egy teljes értékű sakktáblát tartalmaz, amelyen:
 
 ---
 
-## Vercel deployment (Iteráció 04 – patch-06)
+## Vercel deployment fix (Iteráció 04 – patch-07)
 
-- **Online elérhetőség** – az alkalmazás mostantól statikus weboldalként is hostolható (pl. Vercel), nem szükséges szerver futtatása; a build automatikusan legenerálja az összes oldalt
+- **Stockfish motor javítva Vercelen** – a sakkmotor korábban csak lokálisan futott, mert egy szükséges bináris fájl kimaradt az online verzióból; most a build automatikusan tartalmazza, így az elemzés és az AI elleni játék Vercelen is működik
 
 ---
 

@@ -162,6 +162,7 @@ Ez a fájl minden iteráció és patch után frissítendő. Rögzíti, mi kész�
 | Patch | Változás | Megoldás |
 |-------|----------|----------|
 | `iter-04-patch-06-vercel-deploy.md` | Vercel hostolás előkészítése | `nuxt.config.ts`-ben `ssr: false` globálisan bekapcsolva → `nuxt generate` statikus SPA-t generál a `.output/public/` mappába |
+| `iter-04-patch-07-stockfish-wasm.md` | Stockfish nem indult Vercelen — WASM fájl hiányzott a buildből | `public/stockfish/`-ba kerül a JS + WASM; `postinstall` script másolja `node_modules`-ból; `?url` import törölve, hardcoded path |
 
 ---
 

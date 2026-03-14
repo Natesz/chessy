@@ -7,7 +7,7 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare",
+    "postinstall": "nuxt prepare && mkdir -p public/stockfish && cp node_modules/stockfish/src/stockfish-nnue-16-single.js public/stockfish/ && cp node_modules/stockfish/src/stockfish-nnue-16-single.wasm public/stockfish/",
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed"
   },

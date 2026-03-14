@@ -18,6 +18,9 @@ logs
 .fleet
 .idea
 
+# Stockfish binaries (copied from node_modules via postinstall)
+public/stockfish/
+
 # Local env files
 .env
 .env.*

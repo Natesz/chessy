@@ -1,7 +1,5 @@
 import { Chess } from 'chess.js'
 import type { AnalysisLine, EvalResult } from '~/types/chess'
-// ?url → Vite csak URL-t ad vissza, nem bundle-öli a fájlt
-import stockfishUrl from 'stockfish/src/stockfish-nnue-16-single.js?url'
 
 export function useStockfish() {
   let worker: Worker | null = null
@@ -67,7 +65,7 @@ export function useStockfish() {
   function init() {
     if (worker || !import.meta.client) return
 
-    worker = new Worker(stockfishUrl, { type: 'classic' })
+    worker = new Worker('/stockfish/stockfish-nnue-16-single.js', { type: 'classic' })
 
     worker.onerror = (e) => {
       console.error('[Stockfish] worker error:', e)
