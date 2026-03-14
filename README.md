@@ -31,6 +31,14 @@ Az alkalmazás jelenleg egy teljes értékű sakktáblát tartalmaz, amelyen:
 
 ---
 
+## Legújabb javítások (Iteráció 04 – patch-03)
+
+- **Elemzési nyilak javítva** – a /analysis oldalon a Stockfish nyilak ismét megjelennek a táblán a legjobb lépésekre mutatva
+- **Kattintásbug javítva** – a /play oldalon most a megfelelő figura jelölődik ki kattintásra
+- **Játszmalap panel** – a lépéslista fix szélességű és helyes sorrendben jelenik meg; az első lépés előtt is látható a "JÁTSZMALAP" felirat
+
+---
+
 ## Legújabb javítások (Iteráció 04 – patch-02)
 
 - **Játék tábla mérete javítva** – a /play oldalon a sakktábla most megfelelő méretben jelenik meg

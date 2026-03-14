@@ -79,12 +79,7 @@ function computeArrows() {
 
 function syncCg() {
   if (!cg) return
-  const { shapes: stockfishShapes, brushes } = computeArrows()
-  // Preserve user-drawn circles/arrows (right-click); only replace our Stockfish arrows
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const userShapes = (cg.state.drawable.shapes as any[]).filter(
-    s => !['arrow1', 'arrow2', 'arrow3'].includes(s.brush),
-  )
+  const { shapes: autoShapes, brushes } = computeArrows()
   const mc = props.movableColor === 'none' ? undefined : (props.movableColor ?? 'both')
   const movableColorResolved = props.gameState.isGameOver ? undefined : mc
   cg.set({
@@ -97,7 +92,7 @@ function syncCg() {
     },
     check: props.gameState.isCheck,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    drawable: { shapes: [...userShapes, ...stockfishShapes], brushes } as any,
+    drawable: { autoShapes, brushes } as any,
   })
 }
 
@@ -127,7 +122,17 @@ function initChessground() {
     selectable: { enabled: true },
     highlight: { lastMove: true, check: true },
     animation: { enabled: true, duration: 200 },
-    drawable: { enabled: true, visible: true, defaultSnapToValidMove: true },
+    drawable: {
+      enabled: true,
+      visible: true,
+      defaultSnapToValidMove: true,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      brushes: {
+        arrow1: { key: 'arrow1', color: '#8899BB', opacity: 0.75, lineWidth: 18 },
+        arrow2: { key: 'arrow2', color: '#8899BB', opacity: 0.45, lineWidth: 12 },
+        arrow3: { key: 'arrow3', color: '#8899BB', opacity: 0.30, lineWidth: 9 },
+      },
+    } as any,
   }
 
   cg = Chessground(boardEl.value, config)

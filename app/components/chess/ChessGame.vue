@@ -106,41 +106,52 @@ defineExpose({ applyOpponentMove, fen, gamePgn })
 <template>
   <div class="flex items-stretch gap-4" style="max-width: min(95vw, 1100px); height: min(80vh, 600px)">
     <!-- Board column -->
-    <div
-      class="flex flex-col gap-0.5 shrink-0"
-      style="width: min(80vh, 520px); max-width: calc(100vw - 490px)"
-    >
-      <div class="text-xs text-gray-400 text-center">
+    <div class="shrink-0" style="width: min(80vh, 520px); max-width: calc(100vw - 490px)">
+      <div class="text-xs text-gray-400 text-center py-0.5">
         {{ playerColor === 'white' ? 'Fekete' : 'Fehér' }}
       </div>
 
       <ClientOnly>
-        <div class="flex-1 min-h-0">
-          <ChessBoard
-            :fen="fen"
-            :game-state="gameState"
-            :legal-moves="legalMoves"
-            :analysis-lines="[]"
-            :orientation="playerColor"
-            :movable-color="phase === 'playing' ? playerColor : 'none'"
-            :show-arrows="false"
-            @move="e => handleMove(e.from, e.to, e.promotion)"
-          />
-        </div>
+        <ChessBoard
+          :fen="fen"
+          :game-state="gameState"
+          :legal-moves="legalMoves"
+          :analysis-lines="[]"
+          :orientation="playerColor"
+          :movable-color="phase === 'playing' ? playerColor : 'none'"
+          :show-arrows="false"
+          @move="e => handleMove(e.from, e.to, e.promotion)"
+        />
         <template #fallback>
-          <div class="flex-1 aspect-square bg-gray-800 rounded animate-pulse" />
+          <div class="w-full bg-gray-800 rounded animate-pulse" style="aspect-ratio: 1" />
         </template>
       </ClientOnly>
 
-      <div class="text-xs text-gray-200 text-center font-medium">
+      <div class="text-xs text-gray-200 text-center font-medium py-0.5">
         {{ playerColor === 'white' ? 'Fehér (Te)' : 'Fekete (Te)' }}
       </div>
     </div>
 
+    <!-- Controls panel -->
+    <ChessGameControls
+      :phase="phase"
+      :mode="mode"
+      :player-color="playerColor"
+      :is-thinking="isThinking"
+      :result="result"
+      :share-url="shareUrl"
+      :opponent-connected="opponentConnected"
+      @select-color="emit('selectColor', $event)"
+      @select-mode="emit('selectMode', $event)"
+      @resign="handleResign"
+      @new-game="handleNewGame"
+      @open-analysis="emit('openAnalysis')"
+    />
+
     <!-- History panel -->
-    <div class="flex-1 flex flex-col gap-2 bg-gray-800 rounded-lg p-3 min-w-0 overflow-hidden">
+    <div class="w-44 shrink-0 flex flex-col gap-2 bg-gray-800 rounded-lg p-3 overflow-hidden">
       <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider shrink-0">
-        Lépések
+        JÁTSZMALAP
       </div>
 
       <div class="flex-1 min-h-0 overflow-y-auto">
@@ -162,21 +173,5 @@ defineExpose({ applyOpponentMove, fen, gamePgn })
         {{ copied ? 'Másolva! ✓' : 'PGN másolása' }}
       </button>
     </div>
-
-    <!-- Controls panel -->
-    <ChessGameControls
-      :phase="phase"
-      :mode="mode"
-      :player-color="playerColor"
-      :is-thinking="isThinking"
-      :result="result"
-      :share-url="shareUrl"
-      :opponent-connected="opponentConnected"
-      @select-color="emit('selectColor', $event)"
-      @select-mode="emit('selectMode', $event)"
-      @resign="handleResign"
-      @new-game="handleNewGame"
-      @open-analysis="emit('openAnalysis')"
-    />
   </div>
 </template>
