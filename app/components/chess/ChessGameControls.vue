@@ -9,7 +9,6 @@ const props = defineProps<{
   mode: GameMode
   playerColor: PlayerColor
   isThinking: boolean
-  moves: string[]
   result: string | null
   shareUrl?: string | null
   opponentConnected?: boolean
@@ -20,15 +19,8 @@ const emit = defineEmits<{
   selectMode: [mode: GameMode]
   resign: []
   newGame: []
+  openAnalysis: []
 }>()
-
-const movePairs = computed(() => {
-  const pairs: [string, string | undefined][] = []
-  for (let i = 0; i < props.moves.length; i += 2) {
-    pairs.push([props.moves[i]!, props.moves[i + 1]])
-  }
-  return pairs
-})
 
 const resultEmoji = computed(() => {
   if (!props.result) return '🏁'
@@ -112,22 +104,7 @@ const resultEmoji = computed(() => {
         <span class="animate-spin inline-block">⟳</span> Stockfish gondolkodik...
       </div>
 
-      <div class="flex-1 min-h-0 overflow-y-auto">
-        <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
-          Lépések
-        </div>
-        <div class="text-xs font-mono text-gray-300 space-y-0.5">
-          <div
-            v-for="(pair, i) in movePairs"
-            :key="i"
-            class="flex gap-1"
-          >
-            <span class="text-gray-600 w-5 shrink-0 text-right">{{ i + 1 }}.</span>
-            <span class="w-12">{{ pair[0] ?? '' }}</span>
-            <span class="w-12 text-gray-400">{{ pair[1] ?? '' }}</span>
-          </div>
-        </div>
-      </div>
+      <div class="flex-1" />
 
       <button
         class="shrink-0 py-1.5 rounded bg-red-800 hover:bg-red-700 text-white text-xs font-semibold transition-colors"
@@ -147,6 +124,13 @@ const resultEmoji = computed(() => {
           {{ result }}
         </div>
       </div>
+
+      <button
+        class="shrink-0 py-2 rounded bg-blue-700 hover:bg-blue-600 text-white text-xs font-semibold transition-colors"
+        @click="emit('openAnalysis')"
+      >
+        Elemzés megnyitása →
+      </button>
 
       <button
         class="shrink-0 py-2 rounded bg-amber-600 hover:bg-amber-500 text-white text-xs font-semibold transition-colors"

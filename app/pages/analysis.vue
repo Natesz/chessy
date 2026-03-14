@@ -88,7 +88,16 @@ function handleKeydown(e: KeyboardEvent) {
 
 onMounted(() => {
   init()
-  analyze(currentFen.value)
+  const pendingPgn = import.meta.client
+    ? localStorage.getItem('chessy:pending-pgn')
+    : null
+  if (pendingPgn) {
+    localStorage.removeItem('chessy:pending-pgn')
+    handleLoadPgn(pendingPgn)
+  }
+  else {
+    analyze(currentFen.value)
+  }
   window.addEventListener('keydown', handleKeydown)
 })
 

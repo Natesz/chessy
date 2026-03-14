@@ -31,6 +31,14 @@ Az alkalmazás jelenleg egy teljes értékű sakktáblát tartalmaz, amelyen:
 
 ---
 
+## Legújabb javítások (Iteráció 04 – patch-02)
+
+- **Játék tábla mérete javítva** – a /play oldalon a sakktábla most megfelelő méretben jelenik meg
+- **Lépés history a játék oldalon** – a tábla mellett folyamatosan látható a lépéslista; meccs végén PGN másolható
+- **Elemzés megnyitása gomb** – meccs után egyetlen kattintással átlép az elemző módba, a parti automatikusan betöltődik
+
+---
+
 ## Legújabb javítások (Iteráció 04 – patch-01)
 
 - **Navigációs sáv és sötét háttér visszaállt** – egy technikai hiba miatt a fejlécmenü és a sötét téma nem jelent meg; ez kijavításra került

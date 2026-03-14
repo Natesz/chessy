@@ -16,6 +16,7 @@ const emit = defineEmits<{
   newGame: []
   selectColor: [color: PlayerColor | 'random']
   selectMode: [mode: GameMode]
+  openAnalysis: []
 }>()
 
 const phase = defineModel<GamePhase>('phase', { default: 'setup' })
@@ -26,6 +27,29 @@ const { isThinking } = useStockfishPlayer()
 
 const moves = ref<string[]>([])
 const result = ref<string | null>(null)
+
+const movePairs = computed(() => {
+  const pairs: [string, string | undefined][] = []
+  for (let i = 0; i < moves.value.length; i += 2)
+    pairs.push([moves.value[i]!, moves.value[i + 1]])
+  return pairs
+})
+
+const gamePgn = computed(() => {
+  const tokens: string[] = []
+  for (let i = 0; i < moves.value.length; i++) {
+    if (i % 2 === 0) tokens.push(`${Math.floor(i / 2) + 1}.`)
+    tokens.push(moves.value[i]!)
+  }
+  return tokens.join(' ')
+})
+
+const copied = ref(false)
+async function copyPgn() {
+  await navigator.clipboard.writeText(gamePgn.value)
+  copied.value = true
+  setTimeout(() => { copied.value = false }, 2000)
+}
 
 function handleMove(from: string, to: string, promo?: string) {
   if (phase.value !== 'playing') return
@@ -76,19 +100,22 @@ function applyOpponentMove(from: string, to: string, promo?: string) {
   if (gameState.value.isGameOver) endGame()
 }
 
-defineExpose({ applyOpponentMove, fen })
+defineExpose({ applyOpponentMove, fen, gamePgn })
 </script>
 
 <template>
-  <div class="flex gap-4" style="max-width: 900px; height: 600px">
+  <div class="flex items-stretch gap-4" style="max-width: min(95vw, 1100px); height: min(80vh, 600px)">
     <!-- Board column -->
-    <div class="flex flex-col gap-1 flex-1">
+    <div
+      class="flex flex-col gap-0.5 shrink-0"
+      style="width: min(80vh, 520px); max-width: calc(100vw - 490px)"
+    >
       <div class="text-xs text-gray-400 text-center">
         {{ playerColor === 'white' ? 'Fekete' : 'Fehér' }}
       </div>
 
       <ClientOnly>
-        <div class="flex-1">
+        <div class="flex-1 min-h-0">
           <ChessBoard
             :fen="fen"
             :game-state="gameState"
@@ -110,13 +137,38 @@ defineExpose({ applyOpponentMove, fen })
       </div>
     </div>
 
+    <!-- History panel -->
+    <div class="flex-1 flex flex-col gap-2 bg-gray-800 rounded-lg p-3 min-w-0 overflow-hidden">
+      <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider shrink-0">
+        Lépések
+      </div>
+
+      <div class="flex-1 min-h-0 overflow-y-auto">
+        <div class="text-xs font-mono text-gray-300 space-y-0.5">
+          <div v-for="(pair, i) in movePairs" :key="i" class="flex gap-1">
+            <span class="text-gray-600 w-5 shrink-0 text-right">{{ i + 1 }}.</span>
+            <span class="w-14">{{ formatSan(pair[0] ?? '') }}</span>
+            <span class="w-14 text-gray-400">{{ pair[1] ? formatSan(pair[1]) : '' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <button
+        v-if="phase === 'finished'"
+        class="shrink-0 py-1.5 rounded text-xs font-semibold transition-colors"
+        :class="copied ? 'bg-green-700 text-white' : 'bg-gray-700 hover:bg-gray-600 text-gray-200'"
+        @click="copyPgn"
+      >
+        {{ copied ? 'Másolva! ✓' : 'PGN másolása' }}
+      </button>
+    </div>
+
     <!-- Controls panel -->
     <ChessGameControls
       :phase="phase"
       :mode="mode"
       :player-color="playerColor"
       :is-thinking="isThinking"
-      :moves="moves"
       :result="result"
       :share-url="shareUrl"
       :opponent-connected="opponentConnected"
@@ -124,6 +176,7 @@ defineExpose({ applyOpponentMove, fen })
       @select-mode="emit('selectMode', $event)"
       @resign="handleResign"
       @new-game="handleNewGame"
+      @open-analysis="emit('openAnalysis')"
     />
   </div>
 </template>

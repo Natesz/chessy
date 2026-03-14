@@ -100,6 +100,12 @@ function handleNewGame() {
   shareUrl.value = null
   room.unsubscribe()
 }
+
+function handleOpenAnalysis() {
+  const pgn = gameRef.value?.gamePgn ?? ''
+  if (pgn) localStorage.setItem('chessy:pending-pgn', pgn)
+  navigateTo('/analysis')
+}
 </script>
 
 <template>
@@ -114,5 +120,6 @@ function handleNewGame() {
     @select-mode="(m: GameMode) => { mode = m }"
     @move="(from: string, to: string, promo?: string) => handleMove(from, to, promo)"
     @new-game="handleNewGame"
+    @open-analysis="handleOpenAnalysis"
   />
 </template>

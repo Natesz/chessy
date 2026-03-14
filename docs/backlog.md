@@ -147,6 +147,7 @@ Ez a fájl minden iteráció és patch után frissítendő. Rögzíti, mi kész�
 | Patch | Hiba | Megoldás |
 |-------|------|----------|
 | `iter-04-patch-01-layout-arrow-fix.md` | Top nav és háttér nem jelent meg; nyilak halvány sötét háttéren | `app.vue`-ba `<NuxtLayout>` wrapper hozzáadva; arrow1 opacity 0.65→0.75; arrow2/3 opacity képlet növelve |
+| `iter-04-patch-02-play-history.md` | Play board miniatűr; lépés history hiányzott; nincs "Elemzés megnyitása" gomb | Board column explicit `min(80vh, 520px)` szélesség; önálló history panel a board és controls között; PGN másolás + Elemzés gomb meccs végén; `localStorage` pending-pgn átadás analysis oldalra |
 
 ---
 
