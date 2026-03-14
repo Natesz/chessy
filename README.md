@@ -31,6 +31,13 @@ Az alkalmazás jelenleg egy teljes értékű sakktáblát tartalmaz, amelyen:
 
 ---
 
+## Legújabb javítások (Iteráció 04 – patch-01)
+
+- **Navigációs sáv és sötét háttér visszaállt** – egy technikai hiba miatt a fejlécmenü és a sötét téma nem jelent meg; ez kijavításra került
+- **Elemzési nyilak jobban látszódnak** – a Stockfish nyilak átlátszósága kismértékben nőtt a sötét háttéren
+
+---
+
 ## Legújabb fejlesztések (Iteráció 04)
 
 - **Navigációs menü**: az oldal tetején megjelent egy menüsáv — Elemzés, Játék és (hamarosan) Puzzle módok között lehet váltani

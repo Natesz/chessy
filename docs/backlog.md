@@ -146,7 +146,7 @@ Ez a fájl minden iteráció és patch után frissítendő. Rögzíti, mi kész�
 
 | Patch | Hiba | Megoldás |
 |-------|------|----------|
-| – | – | – |
+| `iter-04-patch-01-layout-arrow-fix.md` | Top nav és háttér nem jelent meg; nyilak halvány sötét háttéren | `app.vue`-ba `<NuxtLayout>` wrapper hozzáadva; arrow1 opacity 0.65→0.75; arrow2/3 opacity képlet növelve |
 
 ---
 

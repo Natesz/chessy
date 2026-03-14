@@ -39,7 +39,7 @@ function computeArrows() {
   const shapes: Array<{ orig: Key, dest: Key, brush: string }> = []
   const brushes: Record<string, { key: string, color: string, opacity: number, lineWidth: number }> = {}
 
-  brushes.arrow1 = { key: 'arrow1', color: '#8899BB', opacity: 0.65, lineWidth: 18 }
+  brushes.arrow1 = { key: 'arrow1', color: '#8899BB', opacity: 0.75, lineWidth: 18 }
   shapes.push({
     orig: best.bestMove.slice(0, 2) as Key,
     dest: best.bestMove.slice(2, 4) as Key,
@@ -51,7 +51,7 @@ function computeArrows() {
 
     if (second?.bestMove) {
       const w2 = Math.min(12, Math.max(3, Math.round(ratio12 * 9 + 3)))
-      brushes.arrow2 = { key: 'arrow2', color: '#8899BB', opacity: ratio12 * 0.4 + 0.15, lineWidth: w2 }
+      brushes.arrow2 = { key: 'arrow2', color: '#8899BB', opacity: ratio12 * 0.45 + 0.15, lineWidth: w2 }
       shapes.push({
         orig: second.bestMove.slice(0, 2) as Key,
         dest: second.bestMove.slice(2, 4) as Key,
@@ -64,7 +64,7 @@ function computeArrows() {
       const ratio13 = (5 - Math.min(gap13, 5)) / 5
       if (ratio13 > 0) {
         const w3 = Math.min(10, Math.max(2, Math.round(ratio13 * 7 + 3)))
-        brushes.arrow3 = { key: 'arrow3', color: '#8899BB', opacity: ratio13 * 0.35 + 0.15, lineWidth: w3 }
+        brushes.arrow3 = { key: 'arrow3', color: '#8899BB', opacity: ratio13 * 0.40 + 0.15, lineWidth: w3 }
         shapes.push({
           orig: third.bestMove.slice(0, 2) as Key,
           dest: third.bestMove.slice(2, 4) as Key,
