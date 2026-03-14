@@ -1,4 +1,5 @@
 export default defineNuxtConfig({
+  ssr: false,
   srcDir: 'app/',
   compatibilityDate: '2024-11-01',
   future: {

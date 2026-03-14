@@ -5,7 +5,7 @@ import type { Config } from 'chessground/config'
 import type { Key } from 'chessground/types'
 import type { AnalysisLine, ChessMove, GameState } from '~/types/chess'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   fen: string
   gameState: GameState
   legalMoves: Map<Key, Key[]>
@@ -13,7 +13,9 @@ const props = defineProps<{
   orientation?: 'white' | 'black'
   movableColor?: 'white' | 'black' | 'both' | 'none'
   showArrows?: boolean
-}>()
+}>(), {
+  showArrows: true,
+})
 
 const emit = defineEmits<{
   move: [move: ChessMove]
@@ -25,7 +27,7 @@ let cg: Api | null = null
 let pendingFen: string | null = null
 
 function computeArrows() {
-  if (props.showArrows === false) return { shapes: [], brushes: {} }
+  if (!props.showArrows) return { shapes: [], brushes: {} }
   const lines = props.analysisLines
   if (!lines.length || props.gameState.isGameOver) return { shapes: [], brushes: {} }
 
@@ -39,7 +41,7 @@ function computeArrows() {
   const shapes: Array<{ orig: Key, dest: Key, brush: string }> = []
   const brushes: Record<string, { key: string, color: string, opacity: number, lineWidth: number }> = {}
 
-  brushes.arrow1 = { key: 'arrow1', color: '#8899BB', opacity: 0.75, lineWidth: 18 }
+  brushes.arrow1 = { key: 'arrow1', color: '#5b8abf', opacity: 0.85, lineWidth: 18 }
   shapes.push({
     orig: best.bestMove.slice(0, 2) as Key,
     dest: best.bestMove.slice(2, 4) as Key,
@@ -96,6 +98,8 @@ function syncCg() {
     drawable: { brushes } as any,
   })
   cg.setAutoShapes(shapes)
+  // Re-sync arrows after chessground animation (200ms) to survive skipSvg frames
+  setTimeout(() => syncArrows(), 250)
 }
 
 function syncArrows() {
@@ -139,7 +143,7 @@ function initChessground() {
       defaultSnapToValidMove: true,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       brushes: {
-        arrow1: { key: 'arrow1', color: '#8899BB', opacity: 0.75, lineWidth: 18 },
+        arrow1: { key: 'arrow1', color: '#5b8abf', opacity: 0.85, lineWidth: 18 },
         arrow2: { key: 'arrow2', color: '#8899BB', opacity: 0.45, lineWidth: 12 },
         arrow3: { key: 'arrow3', color: '#8899BB', opacity: 0.30, lineWidth: 9 },
       },
@@ -154,10 +158,19 @@ function handleWheel(e: WheelEvent) {
   emit('navigate', e.deltaY < 0 ? 'back' : 'forward')
 }
 
-watch(() => props.fen, () => syncCg())
-watch(() => props.analysisLines, () => syncArrows())
+watch(
+  [() => props.fen, () => props.movableColor, () => props.orientation],
+  () => syncCg(),
+)
+watch(() => props.analysisLines, (newVal, oldVal) => {
+  console.log('[ChessBoard] analysisLines watch fired, new length:', newVal?.length, 'old length:', oldVal?.length)
+  syncArrows()
+}, { deep: true })
 
-onMounted(() => initChessground())
+onMounted(() => {
+  initChessground()
+  syncArrows()
+})
 onUnmounted(() => cg?.destroy())
 </script>
 

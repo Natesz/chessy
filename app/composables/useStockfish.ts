@@ -124,7 +124,13 @@ export function useStockfish() {
 
           if (pvMatch) {
             const uciMoves = pvMatch[1].trim().split(' ').slice(0, 5)
-            const sanMoves = uciMovesToSan(currentFen, uciMoves)
+            let sanMoves: string[] = []
+            try {
+              sanMoves = uciMovesToSan(currentFen, uciMoves)
+            }
+            catch {
+              // skip SAN conversion if FEN is invalid (e.g. getBestMove context)
+            }
             const lines = [...analysisLines.value]
             lines[multipvIndex - 1] = {
               multipv: multipvIndex,

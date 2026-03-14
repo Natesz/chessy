@@ -154,6 +154,17 @@ Ez a fájl minden iteráció és patch után frissítendő. Rögzíti, mi kész�
 
 ---
 
+## Iteráció 04 – patch-06: Vercel deployment
+
+**Terv:** `docs/plans/iter-04-patch-06-vercel-deploy.md`
+**Státusz:** ✅ Kész
+
+| Patch | Változás | Megoldás |
+|-------|----------|----------|
+| `iter-04-patch-06-vercel-deploy.md` | Vercel hostolás előkészítése | `nuxt.config.ts`-ben `ssr: false` globálisan bekapcsolva → `nuxt generate` statikus SPA-t generál a `.output/public/` mappába |
+
+---
+
 ## Jövőbeli modulok (nem ütemezett)
 
 | Modul | Leírás |

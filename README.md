@@ -31,6 +31,12 @@ Az alkalmazás jelenleg egy teljes értékű sakktáblát tartalmaz, amelyen:
 
 ---
 
+## Vercel deployment (Iteráció 04 – patch-06)
+
+- **Online elérhetőség** – az alkalmazás mostantól statikus weboldalként is hostolható (pl. Vercel), nem szükséges szerver futtatása; a build automatikusan legenerálja az összes oldalt
+
+---
+
 ## Legújabb javítások (Iteráció 04 – patch-05)
 
 - **Elemzési nyilak javítva** – az elemzési nyilak most már megbízhatóan megjelennek a táblán; a javítás elkülöníti a pozíció- és nyíl-frissítést, így nincs versenyhelyzet a chessground belső animációs rendszerével
