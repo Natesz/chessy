@@ -106,10 +106,11 @@ defineExpose({ applyOpponentMove, fen, gamePgn })
 <template>
   <div
     class="flex flex-col lg:flex-row lg:items-stretch gap-4 w-full px-2 lg:px-0 mx-auto lg:h-[min(80vh,600px)]"
+
     style="max-width: min(95vw, 1100px)"
   >
     <!-- Board column — single instance, responsive sizing via CSS -->
-    <div class="board-col mx-auto lg:mx-0 shrink-0">
+    <div class="board-col shrink-0">
       <div class="text-xs text-gray-400 text-center py-0.5">
         {{ playerColor === 'white' ? 'Fekete' : 'Fehér' }}
       </div>
@@ -157,7 +158,7 @@ defineExpose({ applyOpponentMove, fen, gamePgn })
         JÁTSZMALAP
       </div>
 
-      <div class="max-h-[30vh] lg:max-h-none lg:flex-1 min-h-0 overflow-y-auto">
+      <div class="max-h-[30vh] lg:max-h-none lg:flex-1 min-h-0 overflow-hidden lg:overflow-y-auto">
         <div class="text-xs font-mono text-gray-300 space-y-0.5">
           <div v-for="(pair, i) in movePairs" :key="i" class="flex gap-1">
             <span class="text-gray-600 w-5 shrink-0 text-right">{{ i + 1 }}.</span>
@@ -181,13 +182,17 @@ defineExpose({ applyOpponentMove, fen, gamePgn })
 
 <style scoped>
 .board-col {
-  width: 100%;
-  max-width: min(100vw - 16px, 600px);
+  width: 100vw;
+  max-width: 100vw;
+  margin-left: -8px;
+  margin-right: -8px;
 }
 @media (min-width: 1024px) {
   .board-col {
     width: min(80vh, 520px);
     max-width: calc(100vw - 490px);
+    margin-left: 0;
+    margin-right: 0;
   }
 }
 </style>

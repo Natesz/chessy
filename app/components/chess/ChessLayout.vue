@@ -45,7 +45,7 @@ defineEmits<{
 
     <!-- Board column — single instance, responsive sizing via CSS -->
     <ClientOnly>
-      <div class="board-col mx-auto lg:mx-0 lg:flex lg:items-center shrink-0">
+      <div class="board-col lg:flex lg:items-center shrink-0">
         <ChessBoard
           :fen="fen"
           :game-state="gameState"
@@ -140,13 +140,17 @@ defineEmits<{
 
 <style scoped>
 .board-col {
-  width: 100%;
-  max-width: min(100vw - 16px, 600px);
+  width: 100vw;
+  max-width: 100vw;
+  margin-left: -8px;
+  margin-right: -8px;
 }
 @media (min-width: 1024px) {
   .board-col {
     width: min(80vh, 540px);
     max-width: calc(100vw - 500px);
+    margin-left: 0;
+    margin-right: 0;
   }
 }
 </style>
