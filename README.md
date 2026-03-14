@@ -31,6 +31,12 @@ Az alkalmazás jelenleg egy teljes értékű sakktáblát tartalmaz, amelyen:
 
 ---
 
+## Legújabb javítások (Iteráció 04 – patch-05)
+
+- **Elemzési nyilak javítva** – az elemzési nyilak most már megbízhatóan megjelennek a táblán; a javítás elkülöníti a pozíció- és nyíl-frissítést, így nincs versenyhelyzet a chessground belső animációs rendszerével
+
+---
+
 ## Legújabb javítások (Iteráció 04 – patch-04)
 
 - **Elemzési nyilak végleg javítva** – a chessground belső útvonal-optimalizáció miatt a nyilak korábban nem rajzolódtak újra; a dedikált API-ra váltással ez megoldódott

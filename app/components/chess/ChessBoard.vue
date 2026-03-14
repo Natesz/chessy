@@ -82,7 +82,7 @@ function syncCg() {
   const { shapes, brushes } = computeArrows()
   const mc = props.movableColor === 'none' ? undefined : (props.movableColor ?? 'both')
   const movableColorResolved = props.gameState.isGameOver ? undefined : mc
-  // 1. Board state + dynamic brush update (anim path via fen change)
+  // Full board sync (fen changed: pieces + movable + arrows)
   cg.set({
     fen: props.fen,
     orientation: props.orientation ?? 'white',
@@ -95,7 +95,15 @@ function syncCg() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     drawable: { brushes } as any,
   })
-  // 2. Arrows via dedicated API — render() path guarantees SVG redraw
+  cg.setAutoShapes(shapes)
+}
+
+function syncArrows() {
+  if (!cg) return
+  const { shapes, brushes } = computeArrows()
+  // No fen → render() path (not anim()) — user annotations preserved, no RAF race
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  cg.set({ drawable: { brushes } } as any)
   cg.setAutoShapes(shapes)
 }
 
@@ -147,7 +155,7 @@ function handleWheel(e: WheelEvent) {
 }
 
 watch(() => props.fen, () => syncCg())
-watch(() => props.analysisLines, () => syncCg())
+watch(() => props.analysisLines, () => syncArrows())
 
 onMounted(() => initChessground())
 onUnmounted(() => cg?.destroy())
