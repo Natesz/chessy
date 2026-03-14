@@ -153,7 +153,7 @@ defineExpose({ applyOpponentMove, fen, gamePgn })
     />
 
     <!-- History panel -->
-    <div class="w-full lg:w-44 shrink-0 flex flex-col gap-2 bg-gray-800 rounded-lg p-3 overflow-hidden">
+    <div class="w-full lg:w-44 shrink-0 flex flex-col gap-2 bg-gray-800 rounded-lg p-3 overflow-hidden max-h-[40vh] lg:max-h-none">
       <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider shrink-0">
         JÁTSZMALAP
       </div>
@@ -182,8 +182,8 @@ defineExpose({ applyOpponentMove, fen, gamePgn })
 
 <style scoped>
 .board-col {
-  width: 100vw;
-  max-width: 100vw;
+  width: calc(100% + 16px);
+  max-width: calc(100% + 16px);
   margin-left: -8px;
   margin-right: -8px;
 }

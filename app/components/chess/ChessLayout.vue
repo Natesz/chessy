@@ -140,8 +140,8 @@ defineEmits<{
 
 <style scoped>
 .board-col {
-  width: 100vw;
-  max-width: 100vw;
+  width: calc(100% + 16px);
+  max-width: calc(100% + 16px);
   margin-left: -8px;
   margin-right: -8px;
 }
