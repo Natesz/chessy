@@ -30,8 +30,7 @@ defineEmits<{
 
 <template>
   <div
-    class="flex flex-col lg:flex-row lg:items-stretch gap-3 w-full px-2 lg:px-0 mx-auto lg:h-[min(80vh,600px)]"
-    style="max-width: min(96vw, 1150px)"
+    class="layout-container flex flex-col lg:flex-row lg:items-stretch gap-3 w-full mx-auto lg:h-[min(80vh,600px)]"
   >
     <!-- Eval bar — desktop only -->
     <ClientOnly>
@@ -62,7 +61,7 @@ defineEmits<{
 
     <!-- Right panel: analysis lines + move history + nav -->
     <ClientOnly>
-      <div class="w-full lg:flex-1 flex flex-col gap-2 min-w-0 bg-gray-800 rounded-lg p-3 overflow-hidden">
+      <div class="w-full lg:flex-1 flex flex-col gap-2 min-w-0 bg-gray-800 rounded-lg p-3 overflow-hidden mx-2 lg:mx-0">
         <!-- Analysis lines -->
         <ChessAnalysisLines :lines="analysisLines" :is-analyzing="isAnalyzing" />
 
@@ -128,6 +127,7 @@ defineEmits<{
 
     <!-- FEN/PGN loader panel -->
     <ChessFenPgnLoader
+      class="mx-2 lg:mx-0"
       :fen-error="fenError"
       :pgn-error="pgnError"
       :current-fen="currentFen"
@@ -139,18 +139,19 @@ defineEmits<{
 </template>
 
 <style scoped>
+.layout-container {
+  max-width: 100%;
+}
 .board-col {
-  width: calc(100% + 16px);
-  max-width: calc(100% + 16px);
-  margin-left: -8px;
-  margin-right: -8px;
+  width: 100%;
 }
 @media (min-width: 1024px) {
+  .layout-container {
+    max-width: min(96vw, 1150px);
+  }
   .board-col {
     width: min(80vh, 540px);
     max-width: calc(100vw - 500px);
-    margin-left: 0;
-    margin-right: 0;
   }
 }
 </style>

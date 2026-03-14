@@ -105,9 +105,7 @@ defineExpose({ applyOpponentMove, fen, gamePgn })
 
 <template>
   <div
-    class="flex flex-col lg:flex-row lg:items-stretch gap-4 w-full px-2 lg:px-0 mx-auto lg:h-[min(80vh,600px)]"
-
-    style="max-width: min(95vw, 1100px)"
+    class="game-container flex flex-col lg:flex-row lg:items-stretch gap-4 w-full mx-auto lg:h-[min(80vh,600px)] overflow-hidden lg:overflow-visible"
   >
     <!-- Board column — single instance, responsive sizing via CSS -->
     <div class="board-col shrink-0">
@@ -138,6 +136,7 @@ defineExpose({ applyOpponentMove, fen, gamePgn })
 
     <!-- Controls panel -->
     <ChessGameControls
+      class="mx-2 lg:mx-0"
       :phase="phase"
       :mode="mode"
       :player-color="playerColor"
@@ -153,7 +152,7 @@ defineExpose({ applyOpponentMove, fen, gamePgn })
     />
 
     <!-- History panel -->
-    <div class="w-full lg:w-44 shrink-0 flex flex-col gap-2 bg-gray-800 rounded-lg p-3 overflow-hidden max-h-[40vh] lg:max-h-none">
+    <div class="w-full lg:w-44 shrink-0 flex flex-col gap-2 bg-gray-800 rounded-lg p-3 overflow-hidden h-24 lg:h-auto lg:max-h-none mx-2 lg:mx-0">
       <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider shrink-0">
         JÁTSZMALAP
       </div>
@@ -181,18 +180,19 @@ defineExpose({ applyOpponentMove, fen, gamePgn })
 </template>
 
 <style scoped>
+.game-container {
+  max-width: 100%;
+}
 .board-col {
-  width: calc(100% + 16px);
-  max-width: calc(100% + 16px);
-  margin-left: -8px;
-  margin-right: -8px;
+  width: 100%;
 }
 @media (min-width: 1024px) {
+  .game-container {
+    max-width: min(95vw, 1100px);
+  }
   .board-col {
     width: min(80vh, 520px);
     max-width: calc(100vw - 490px);
-    margin-left: 0;
-    margin-right: 0;
   }
 }
 </style>
