@@ -36,8 +36,14 @@ Ez a fájl minden munkamenetben automatikusan betöltődik. Tartsd be az itt le�
 ```
 app/
   pages/
-    chess.vue                  # definePageMeta({ ssr: false })
+    index.vue                  # redirect → /analysis
+    chess.vue                  # redirect → /analysis (backward compat)
+    analysis.vue               # elemzés főoldal (ssr: false)
+    play.vue                   # játék mód – AI vagy 1v1 (ssr: false)
+  layouts/
+    default.vue                # top nav (AppNav) + slot wrapper
   components/
+    AppNav.vue                 # ♟ Chessy · Elemzés · Játék · Puzzle (disabled)
     chess/
       ChessBoard.vue           # chessground wrapper (ClientOnly-ban)
       ChessStockfishEval.vue   # értékelési sáv + szám
@@ -46,15 +52,20 @@ app/
       ChessMoveVariation.vue   # rekurzív mellékág megjelenítő
       ChessAnalysisLines.vue   # Stockfish 3 elemzési sor
       ChessFenPgnLoader.vue    # FEN + PGN betöltő panel (Iteráció 03)
+      ChessGame.vue            # játék layout (tábla + kontroll panel)
+      ChessGameControls.vue    # setup/playing/finished fázis UI
   composables/
     useChessHistory.ts         # fa struktúra alapú lépés state; reset(startFen?) shallowRef+triggerRef
     useStockfish.ts            # Web Worker lifecycle, eval state, position cache
+    useStockfishPlayer.ts      # depth-limited AI move composable
+    useGameRoom.ts             # Supabase Realtime 1v1 szoba
     usePgnParser.ts            # rekurzív descent PGN parser; tokenize + parseTokens + variation handling
   utils/
     san.ts                     # formatSan: SAN → Unicode figuraikonok (auto-imported)
     pgn.ts                     # generatePgn: MoveNode fa → PGN string (Lichess-kompatibilis)
   types/
     chess.ts                   # ChessMove, EvalResult, GameState, MoveNode, VarLine
+    game.ts                    # GameRoom, PlayerToken, RoomStatus
 ```
 
 ---
@@ -66,12 +77,13 @@ app/
 - `chessground`: csak megjelenítés + drag-and-drop UI, mindig `chess.js`-ből kapja a legális lépéseket (`movable.dests`)
 
 **Stockfish:**
-- `stockfish/src/stockfish-nnue-16-single.js` – single-threaded verzió, nem kell SharedArrayBuffer
+- `public/stockfish/` — JS wrapper + WASM ide kerül (`postinstall` script másolja `node_modules`-ból)
+- Worker betöltés: `new Worker('/stockfish/stockfish-nnue-16-single.js', { type: 'classic' })`
+- Single-threaded verzió, nem kell SharedArrayBuffer
 - Web Worker-ként fut, nem blokkolja a UI thread-et
-- `vite.optimizeDeps.exclude: ['stockfish']` a nuxt.config.ts-ben
 
 **SSR:**
-- A chess oldal SSR nélkül fut: `definePageMeta({ ssr: false })`
+- Globálisan kikapcsolva: `ssr: false` a `nuxt.config.ts`-ben (SPA mód)
 - `ChessBoard.vue` `<ClientOnly>` wrapperbe kerül
 
 **Reaktivitás – useChessHistory reset():**
@@ -97,8 +109,8 @@ app/
 ## Amit sosem csinálunk (ebben a projektben)
 
 - Lichess Open Database letöltése/tárolása (csak API hívások)
-- Tesztek bármilyen formában
-- SSR a chess oldalon
+- Vitest, Jest, Cypress tesztek (Playwright e2e megengedve)
+- SSR (globálisan kikapcsolva)
 - A MEKKK projekttel való összekeverés (ez külön Supabase projekt)
 
 ---
