@@ -31,9 +31,10 @@ Az alkalmazás jelenleg egy teljes értékű sakktáblát tartalmaz, amelyen:
 
 ---
 
-## Responsive design (Iteráció 04 – patch-08)
+## Responsive design (Iteráció 04 – patch-08–12)
 
-- **Mobil és tablet támogatás** – az alkalmazás mostantól telefonon és tableten is használható; a sakktábla teljes szélességben jelenik meg, az elemzési panelek és a játékvezérlők alatta sorakoznak vertikálisan
+- **Mobil és tablet támogatás** – az alkalmazás mostantól telefonon és tableten is használható; a sakktábla a képernyő teljes szélességét elfoglalja, az elemzési panelek és a játékvezérlők alatta sorakoznak vertikálisan
+- **Stabil játékélmény mobilon** – lépés megtételekor a sakktábla nem mozdul el, a képernyő nem scrollozik; a tábla mindig fókuszban marad
 
 ---
 

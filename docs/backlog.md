@@ -174,6 +174,10 @@ Ez a fájl minden iteráció és patch után frissítendő. Rögzíti, mi kész�
 | Patch | Változás | Megoldás |
 |-------|----------|----------|
 | `iter-04-patch-08-responsive.md` | Desktop-only layout mobilon és tableten használhatatlan | `lg:` breakpoint (1024px): mobil/tablet vertikális stack, board full-width; desktop változatlan horizontális layout |
+| `iter-04-patch-09` | NaN SVG hibák + oldal-scroll lépéskor analysis módban | Két ChessBoard példány → egy példány responsive CSS-sel; `scrollIntoView` → manuális container scroll |
+| `iter-04-patch-10` | Board nem edge-to-edge + play scroll | Board CSS `calc(100% + 16px)` negative margin; history `overflow-hidden` mobilon |
+| `iter-04-patch-11` | Board még mindig nem teljes szélességű (container max-width limit) | Board CSS `calc` fix, history outer div `max-h` + `overflow-hidden` |
+| `iter-04-patch-12` | Board gap + play scroll végleges javítás | Container `max-width: 100%` mobilon; `default.vue` `p-0 lg:p-4`; board `w-full`; panelek saját `mx-2`; play `overflow-hidden` + history fix `h-24` |
 
 ---
 
