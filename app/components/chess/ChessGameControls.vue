@@ -31,7 +31,7 @@ const resultEmoji = computed(() => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-3 bg-gray-800 rounded-lg p-3 w-56 shrink-0 h-full overflow-hidden">
+  <div class="flex flex-col gap-3 bg-gray-800 rounded-lg p-3 w-full lg:w-56 shrink-0 lg:h-full overflow-hidden">
     <!-- SETUP PHASE -->
     <template v-if="phase === 'setup'">
       <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider">

@@ -166,6 +166,17 @@ Ez a fájl minden iteráció és patch után frissítendő. Rögzíti, mi kész�
 
 ---
 
+## Iteráció 04 – patch-08: Responsive layout (mobil + tablet)
+
+**Terv:** `docs/plans/iter-04-patch-08-responsive.md`
+**Státusz:** ✅ Kész
+
+| Patch | Változás | Megoldás |
+|-------|----------|----------|
+| `iter-04-patch-08-responsive.md` | Desktop-only layout mobilon és tableten használhatatlan | `lg:` breakpoint (1024px): mobil/tablet vertikális stack, board full-width; desktop változatlan horizontális layout |
+
+---
+
 ## Jövőbeli modulok (nem ütemezett)
 
 | Modul | Leírás |

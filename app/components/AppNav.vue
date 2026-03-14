@@ -7,7 +7,7 @@ function isActive(path: string) {
 </script>
 
 <template>
-  <nav class="bg-gray-800 border-b border-gray-700 px-6 py-2 flex items-center gap-6 shrink-0">
+  <nav class="bg-gray-800 border-b border-gray-700 px-3 lg:px-6 py-2 flex items-center gap-4 lg:gap-6 shrink-0">
     <NuxtLink
       to="/analysis"
       class="flex items-center gap-2 text-white font-bold text-lg tracking-tight hover:text-amber-400 transition-colors"

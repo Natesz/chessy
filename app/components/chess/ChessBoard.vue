@@ -162,8 +162,7 @@ watch(
   [() => props.fen, () => props.movableColor, () => props.orientation],
   () => syncCg(),
 )
-watch(() => props.analysisLines, (newVal, oldVal) => {
-  console.log('[ChessBoard] analysisLines watch fired, new length:', newVal?.length, 'old length:', oldVal?.length)
+watch(() => props.analysisLines, () => {
   syncArrows()
 }, { deep: true })
 

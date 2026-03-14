@@ -29,44 +29,63 @@ defineEmits<{
 </script>
 
 <template>
-  <div class="flex items-stretch gap-3 w-full" style="max-width: min(96vw, 1150px); height: min(80vh, 600px)">
-    <!-- Eval bar -->
+  <div
+    class="flex flex-col lg:flex-row lg:items-stretch gap-3 w-full px-2 lg:px-0 mx-auto lg:h-[min(80vh,600px)]"
+    style="max-width: min(96vw, 1150px)"
+  >
+    <!-- Eval bar — desktop only -->
     <ClientOnly>
-      <div class="flex" style="width: 28px">
+      <div class="hidden lg:flex" style="width: 28px">
         <ChessStockfishEval :eval-result="evalResult" :is-analyzing="isAnalyzing" />
       </div>
       <template #fallback>
-        <div style="width: 28px" />
+        <div class="hidden lg:block" style="width: 28px" />
       </template>
     </ClientOnly>
 
     <!-- Board column -->
     <ClientOnly>
-      <div class="flex items-center" style="width: min(80vh, 540px); max-width: calc(100vw - 500px)">
-        <ChessBoard
-          :fen="fen"
-          :game-state="gameState"
-          :legal-moves="legalMoves"
-          :analysis-lines="analysisLines"
-          @move="$emit('move', $event)"
-          @navigate="$emit('navigate', $event)"
-        />
+      <div
+        class="w-full max-w-[600px] mx-auto lg:mx-0 lg:w-auto lg:max-w-none lg:flex lg:items-center"
+        :style="{ width: undefined }"
+      >
+        <div class="w-full aspect-square lg:hidden">
+          <ChessBoard
+            :fen="fen"
+            :game-state="gameState"
+            :legal-moves="legalMoves"
+            :analysis-lines="analysisLines"
+            @move="$emit('move', $event)"
+            @navigate="$emit('navigate', $event)"
+          />
+        </div>
+        <div class="hidden lg:block" style="width: min(80vh, 540px); max-width: calc(100vw - 500px)">
+          <ChessBoard
+            :fen="fen"
+            :game-state="gameState"
+            :legal-moves="legalMoves"
+            :analysis-lines="analysisLines"
+            @move="$emit('move', $event)"
+            @navigate="$emit('navigate', $event)"
+          />
+        </div>
       </div>
       <template #fallback>
-        <div class="aspect-square bg-gray-800 rounded animate-pulse" style="width: min(80vh, 540px)" />
+        <div class="w-full max-w-[600px] mx-auto aspect-square bg-gray-800 rounded animate-pulse lg:mx-0 lg:max-w-none" style="width: min(80vh, 540px)" />
       </template>
     </ClientOnly>
 
     <!-- Right panel: analysis lines + move history + nav -->
     <ClientOnly>
-      <div class="flex-1 flex flex-col gap-2 min-w-0 bg-gray-800 rounded-lg p-3 overflow-hidden">
+      <div class="w-full lg:flex-1 flex flex-col gap-2 min-w-0 bg-gray-800 rounded-lg p-3 overflow-hidden">
         <!-- Analysis lines -->
         <ChessAnalysisLines :lines="analysisLines" :is-analyzing="isAnalyzing" />
 
         <div class="border-t border-gray-700 my-1" />
 
-        <!-- Move history (flex-1 = tölti ki a maradék helyet) -->
+        <!-- Move history (flex-1 = fills remaining space on desktop, max-h on mobile) -->
         <ChessMoveHistory
+          class="max-h-[40vh] lg:max-h-none"
           :root="root"
           :current-node="currentNode"
           :tree-version="treeVersion"
@@ -118,7 +137,7 @@ defineEmits<{
         </div>
       </div>
       <template #fallback>
-        <div class="flex-1 bg-gray-800 rounded-lg" />
+        <div class="w-full lg:flex-1 bg-gray-800 rounded-lg" />
       </template>
     </ClientOnly>
 

@@ -31,6 +31,12 @@ Az alkalmazás jelenleg egy teljes értékű sakktáblát tartalmaz, amelyen:
 
 ---
 
+## Responsive design (Iteráció 04 – patch-08)
+
+- **Mobil és tablet támogatás** – az alkalmazás mostantól telefonon és tableten is használható; a sakktábla teljes szélességben jelenik meg, az elemzési panelek és a játékvezérlők alatta sorakoznak vertikálisan
+
+---
+
 ## Vercel deployment fix (Iteráció 04 – patch-07)
 
 - **Stockfish motor javítva Vercelen** – a sakkmotor korábban csak lokálisan futott, mert egy szükséges bináris fájl kimaradt az online verzióból; most a build automatikusan tartalmazza, így az elemzés és az AI elleni játék Vercelen is működik
