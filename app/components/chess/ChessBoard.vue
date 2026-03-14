@@ -79,9 +79,10 @@ function computeArrows() {
 
 function syncCg() {
   if (!cg) return
-  const { shapes: autoShapes, brushes } = computeArrows()
+  const { shapes, brushes } = computeArrows()
   const mc = props.movableColor === 'none' ? undefined : (props.movableColor ?? 'both')
   const movableColorResolved = props.gameState.isGameOver ? undefined : mc
+  // 1. Board state + dynamic brush update (anim path via fen change)
   cg.set({
     fen: props.fen,
     orientation: props.orientation ?? 'white',
@@ -92,8 +93,10 @@ function syncCg() {
     },
     check: props.gameState.isCheck,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    drawable: { autoShapes, brushes } as any,
+    drawable: { brushes } as any,
   })
+  // 2. Arrows via dedicated API — render() path guarantees SVG redraw
+  cg.setAutoShapes(shapes)
 }
 
 function initChessground() {

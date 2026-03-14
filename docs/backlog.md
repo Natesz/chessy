@@ -149,6 +149,7 @@ Ez a fájl minden iteráció és patch után frissítendő. Rögzíti, mi kész�
 | `iter-04-patch-01-layout-arrow-fix.md` | Top nav és háttér nem jelent meg; nyilak halvány sötét háttéren | `app.vue`-ba `<NuxtLayout>` wrapper hozzáadva; arrow1 opacity 0.65→0.75; arrow2/3 opacity képlet növelve |
 | `iter-04-patch-02-play-history.md` | Play board miniatűr; lépés history hiányzott; nincs "Elemzés megnyitása" gomb | Board column explicit `min(80vh, 520px)` szélesség; önálló history panel a board és controls között; PGN másolás + Elemzés gomb meccs végén; `localStorage` pending-pgn átadás analysis oldalra |
 | `iter-04-patch-03-arrows-board-playwright.md` | Stockfish nyilak nem látszottak az analysis oldalon; kattintásbug (huszár → futó jelölődik); history panel tágult lépésenként; Playwright Chromium nem volt telepítve | `autoShapes` + brushes az `initChessground`-ban; board column `flex-col`+`flex-1` eltávolítva (block layout); layout sorrend: controls ↔ history swap; history fix `w-44`; `npx playwright install chromium` |
+| `iter-04-patch-04-arrows-setautoshapes.md` | Elemzési nyilak továbbra sem jelentek meg — `cg.set({ drawable: { autoShapes } })` az `anim()` pathon fut, SVG render skip optimalizáció miatt nem rajzolódott újra | `syncCg()` két hívásra bontva: `cg.set({ brushes })` + `cg.setAutoShapes(shapes)` — a dedikált API a `render()` pathon fut, garantált SVG újrarajzolás |
 
 ---
 

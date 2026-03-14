@@ -31,6 +31,12 @@ Az alkalmazás jelenleg egy teljes értékű sakktáblát tartalmaz, amelyen:
 
 ---
 
+## Legújabb javítások (Iteráció 04 – patch-04)
+
+- **Elemzési nyilak végleg javítva** – a chessground belső útvonal-optimalizáció miatt a nyilak korábban nem rajzolódtak újra; a dedikált API-ra váltással ez megoldódott
+
+---
+
 ## Legújabb javítások (Iteráció 04 – patch-03)
 
 - **Elemzési nyilak javítva** – a /analysis oldalon a Stockfish nyilak ismét megjelennek a táblán a legjobb lépésekre mutatva
