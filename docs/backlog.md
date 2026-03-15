@@ -181,6 +181,23 @@ Ez a fájl minden iteráció és patch után frissítendő. Rögzíti, mi kész�
 
 ---
 
+## Iteráció 05 – Rubik-kocka kirakó
+
+**Terv:** `docs/plans/iter-05-main-rubiks-cube.md`
+**Státusz:** ✅ Kész
+
+### Implementált feature-ök
+- `app/pages/cube.vue`: Rubik-kocka oldal (ssr: false)
+- `app/components/cube/RubiksCube.vue`: 3D interaktív Rubik-kocka (`cubing.js` twisty-player web component)
+- Keverés gomb: WCA-kompatibilis random scramble generálás
+- Játék gomb: timer indul, kocka forgatható
+- Megoldás detektálás: "Sikerült!" felirat + idő
+- Újra gomb: visszaállítás kiindulásra
+- `AppNav.vue`: "Kocka" tab hozzáadva az Elemzés és Játék mellé
+- `nuxt.config.ts`: `twisty-player` custom element regisztrálva
+
+---
+
 ## Jövőbeli modulok (nem ütemezett)
 
 | Modul | Leírás |

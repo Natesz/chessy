@@ -20,5 +20,12 @@ export default defineNuxtConfig({
     optimizeDeps: {
       exclude: ['stockfish'],
     },
+    vue: {
+      template: {
+        compilerOptions: {
+          isCustomElement: (tag: string) => tag === 'twisty-player',
+        },
+      },
+    },
   },
 })

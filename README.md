@@ -31,6 +31,13 @@ Az alkalmazás jelenleg egy teljes értékű sakktáblát tartalmaz, amelyen:
 
 ---
 
+## Rubik-kocka kirakó (Iteráció 05)
+
+- **Interaktív 3D Rubik-kocka** – a navigációs menüben megjelent egy új "Kocka" fül; a /cube oldalon egy 3D-s Rubik-kocka forgatható egérrel vagy érintéssel
+- **Keverés és időmérés** – a Keverés gomb véletlenszerű, verseny-kompatibilis keverést generál; a Játék gomb elindítja az időmérőt, kirakáskor a pontos idő jelenik meg egy "Sikerült!" felirattal
+
+---
+
 ## Responsive design (Iteráció 04 – patch-08–12)
 
 - **Mobil és tablet támogatás** – az alkalmazás mostantól telefonon és tableten is használható; a sakktábla a képernyő teljes szélességét elfoglalja, az elemzési panelek és a játékvezérlők alatta sorakoznak vertikálisan

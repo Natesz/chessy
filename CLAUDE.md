@@ -28,6 +28,7 @@ Ez a fájl minden munkamenetben automatikusan betöltődik. Tartsd be az itt le�
 | chessground | ^9.2.1 | Interaktív tábla UI (Lichess-alapú) |
 | stockfish | ^16.0.0 | WASM pozícióelemző, Web Worker-ben fut |
 | Supabase | – | Backend (csak saját adatokhoz, ingyenes tier) |
+| cubing | ^0.63.3 | Rubik-kocka 3D UI (twisty-player web component) |
 
 ---
 
@@ -40,10 +41,13 @@ app/
     chess.vue                  # redirect → /analysis (backward compat)
     analysis.vue               # elemzés főoldal (ssr: false)
     play.vue                   # játék mód – AI vagy 1v1 (ssr: false)
+    cube.vue                   # Rubik-kocka kirakó (ssr: false)
   layouts/
     default.vue                # top nav (AppNav) + slot wrapper
   components/
-    AppNav.vue                 # ♟ Chessy · Elemzés · Játék · Puzzle (disabled)
+    AppNav.vue                 # ♟ Chessy · Elemzés · Játék · Kocka · Puzzle (disabled)
+    cube/
+      RubiksCube.vue           # 3D Rubik-kocka (cubing.js twisty-player, keverés, timer)
     chess/
       ChessBoard.vue           # chessground wrapper (ClientOnly-ban)
       ChessStockfishEval.vue   # értékelési sáv + szám
