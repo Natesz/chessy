@@ -116,7 +116,7 @@ onMounted(async () => {
 
   const player = new TwistyPlayer({
     puzzle: '3x3x3',
-    visualization: '3D',
+    visualization: 'PG3D',
     controlPanel: 'none',
     background: 'none',
     hintFacelets: 'none',
@@ -203,8 +203,8 @@ onUnmounted(() => {
 
 <style scoped>
 .cube-player {
-  width: min(400px, 85vw);
-  height: min(400px, 85vw);
+  width: min(480px, 90vw);
+  height: min(480px, 90vw);
 }
 
 .fade-enter-active,
