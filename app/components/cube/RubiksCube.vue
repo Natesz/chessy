@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, nextTick } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 
 type CubePhase = 'idle' | 'scrambling' | 'playing' | 'solved'
 
 const phase = ref<CubePhase>('idle')
 const elapsed = ref(0)
 const scrambleMoves = ref('')
-const playerRef = ref<HTMLElement | null>(null)
+const containerRef = ref<HTMLDivElement | null>(null)
 
 let timerInterval: ReturnType<typeof setInterval> | null = null
 let twistyPlayer: any = null
@@ -112,13 +112,22 @@ async function checkSolved() {
 let pollInterval: ReturnType<typeof setInterval> | null = null
 
 onMounted(async () => {
-  // Dynamically import to ensure client-side only
+  // Import first so the custom element is registered
   await import('cubing/twisty')
 
-  await nextTick()
+  if (!containerRef.value) return
 
-  twistyPlayer = playerRef.value
-  if (!twistyPlayer) return
+  // Create twisty-player programmatically AFTER the custom element is defined
+  const el = document.createElement('twisty-player')
+  el.setAttribute('puzzle', '3x3x3')
+  el.setAttribute('visualization', '3D')
+  el.setAttribute('control-panel', 'none')
+  el.setAttribute('background', 'none')
+  el.setAttribute('hint-facelets', 'none')
+  el.setAttribute('experimental-drag-input', 'auto')
+  el.classList.add('cube-player')
+  containerRef.value.appendChild(el)
+  twistyPlayer = el
 
   // Poll for solved state during play
   pollInterval = setInterval(checkSolved, 500)
@@ -154,21 +163,8 @@ onUnmounted(() => {
       {{ formatTime(elapsed) }}
     </div>
 
-    <!-- Cube -->
-    <ClientOnly>
-      <div class="w-full flex justify-center">
-        <twisty-player
-          ref="playerRef"
-          puzzle="3x3x3"
-          visualization="3D"
-          control-panel="none"
-          background="none"
-          hint-facelets="none"
-          experimental-drag-input="auto"
-          class="cube-player"
-        />
-      </div>
-    </ClientOnly>
+    <!-- Cube (created programmatically after custom element registration) -->
+    <div ref="containerRef" class="w-full flex justify-center" />
 
     <!-- Scramble display -->
     <div
