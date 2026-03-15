@@ -85,8 +85,6 @@ async function checkSolved() {
   if (phase.value !== 'playing' || !twistyPlayer) return
 
   try {
-    const { experimentalSolvedState } = await import('cubing/puzzle-geometry')
-    // Use the twisty player's puzzle to check if solved
     const currentAlg = twistyPlayer.alg?.toString() ?? ''
     if (!currentAlg) return
 
@@ -112,22 +110,22 @@ async function checkSolved() {
 let pollInterval: ReturnType<typeof setInterval> | null = null
 
 onMounted(async () => {
-  // Import first so the custom element is registered
-  await import('cubing/twisty')
+  const { TwistyPlayer } = await import('cubing/twisty')
 
   if (!containerRef.value) return
 
-  // Create twisty-player programmatically AFTER the custom element is defined
-  const el = document.createElement('twisty-player')
-  el.setAttribute('puzzle', '3x3x3')
-  el.setAttribute('visualization', '3D')
-  el.setAttribute('control-panel', 'none')
-  el.setAttribute('background', 'none')
-  el.setAttribute('hint-facelets', 'none')
-  el.setAttribute('experimental-drag-input', 'auto')
-  el.classList.add('cube-player')
-  containerRef.value.appendChild(el)
-  twistyPlayer = el
+  const player = new TwistyPlayer({
+    puzzle: '3x3x3',
+    visualization: '3D',
+    controlPanel: 'none',
+    background: 'none',
+    hintFacelets: 'none',
+    experimentalDragInput: 'auto',
+    experimentalMovePressInput: 'basic',
+  })
+  player.classList.add('cube-player')
+  containerRef.value.appendChild(player)
+  twistyPlayer = player
 
   // Poll for solved state during play
   pollInterval = setInterval(checkSolved, 500)
