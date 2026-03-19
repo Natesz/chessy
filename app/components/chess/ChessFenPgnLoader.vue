@@ -20,7 +20,7 @@ watch(() => props.currentPgn, (pgn) => { pgnInput.value = pgn })
 </script>
 
 <template>
-  <div class="flex flex-col lg:flex-row lg:flex-col gap-2 bg-gray-800 rounded-lg p-3 w-full lg:w-52 shrink-0 overflow-hidden">
+  <div class="flex flex-col lg:flex-row lg:flex-col gap-2 bg-gray-800 rounded-none lg:rounded-lg p-3 w-full lg:w-52 shrink-0 overflow-hidden">
     <!-- FEN section -->
     <div class="flex-1 flex flex-col gap-1.5 min-h-0">
       <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider shrink-0">

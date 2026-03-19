@@ -45,7 +45,7 @@ app/
   layouts/
     default.vue                # top nav (AppNav) + slot wrapper
   components/
-    AppNav.vue                 # ♟ Chessy · Elemzés · Játék · Kocka · Puzzle (disabled)
+    AppNav.vue                 # ♟ iChessy branding + hamburger menü (mobilon drawer, desktopon inline linkek)
     cube/
       RubiksCube.vue           # 3D Rubik-kocka (cubing.js twisty-player, keverés, timer)
     chess/
@@ -109,6 +109,13 @@ app/
 - `chessground/assets/chessground.base.css`
 - `chessground/assets/chessground.brown.css`
 - `chessground/assets/chessground.cburnett.css`
+- Koordináta CSS override szükséges a `ChessBoard.vue`-ban: `coords.ranks { top: 0 }` és `coords.files { left: 0; bottom: 0 }` — az alapértelmezett offsetek (`top: -20px`, `left: 24px`) külső padding nélkül elcsúsztatják a koordinátákat
+
+**Mobil layout:**
+- Sakktábla és panelek teljes szélességűek mobilon (nincs px/mx margó)
+- Panelek `rounded-none lg:rounded-lg` — mobilon szögletes, desktopon kerekített
+- `default.vue` gyökér div: `overflow-x-hidden` biztonsági háló
+- `AppNav.vue` sticky navbar (`sticky top-0 z-30`) + hamburger menü mobilon (< lg)
 
 ## Amit sosem csinálunk (ebben a projektben)
 

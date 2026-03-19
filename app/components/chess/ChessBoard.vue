@@ -133,8 +133,6 @@ function initChessground() {
         },
       },
     },
-    coordinates: true,
-    coordinatesOnSquares: true,
     draggable: { enabled: true },
     selectable: { enabled: true },
     highlight: { lastMove: true, check: true },
@@ -188,4 +186,14 @@ onUnmounted(() => cg?.destroy())
 @import 'chessground/assets/chessground.base.css';
 @import 'chessground/assets/chessground.brown.css';
 @import 'chessground/assets/chessground.cburnett.css';
+
+/* Fix coordinate positioning — default chessground uses offsets (top:-20px, left:24px)
+   that assume external padding around the board. Override to place inside the board. */
+.cg-wrap coords.ranks {
+  top: 0;
+}
+.cg-wrap coords.files {
+  left: 0;
+  bottom: 0;
+}
 </style>

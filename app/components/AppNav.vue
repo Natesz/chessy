@@ -19,13 +19,10 @@ const navLinks = [
 </script>
 
 <template>
-  <nav class="bg-gray-800 border-b border-gray-700 px-3 lg:px-6 py-2 flex items-center gap-4 lg:gap-6 shrink-0">
-    <NuxtLink
-      to="/analysis"
-      class="flex items-center gap-2 text-white font-bold text-lg tracking-tight hover:text-amber-400 transition-colors"
-    >
-      ♟ Chessy
-    </NuxtLink>
+  <nav class="bg-gray-800 border-b border-gray-700 px-3 lg:px-6 py-2 flex items-center gap-4 lg:gap-6 shrink-0 sticky top-0 z-30">
+    <span class="flex items-center gap-2 text-white font-bold text-lg tracking-tight">
+      ♟ iChessy
+    </span>
 
     <!-- Desktop nav links -->
     <div class="hidden lg:flex items-center gap-1">

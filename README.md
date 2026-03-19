@@ -31,6 +31,14 @@ Az alkalmazás jelenleg egy teljes értékű sakktáblát tartalmaz, amelyen:
 
 ---
 
+## Mobil élmény javítások (Iteráció 05 – patch-04)
+
+- **Hamburger menü** – mobilon a navigációs linkek egy jobb oldalról kinyíló menübe kerültek; az alkalmazás neve iChessy-re változott
+- **Teljes szélességű tábla** – a sakktábla és az alatta lévő panelek most mobilon is kitöltik a képernyő teljes szélességét, nincs fehér csík az oldalakon
+- **Fix fejléc** – a navigációs sáv görgetéskor mindig a képernyő tetején marad
+
+---
+
 ## Rubik-kocka kirakó (Iteráció 05)
 
 - **Interaktív 3D Rubik-kocka** – a navigációs menüben megjelent egy új "Kocka" fül; a /cube oldalon egy 3D-s Rubik-kocka forgatható egérrel vagy érintéssel

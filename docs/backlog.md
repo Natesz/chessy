@@ -196,6 +196,15 @@ Ez a fájl minden iteráció és patch után frissítendő. Rögzíti, mi kész�
 - `AppNav.vue`: "Kocka" tab hozzáadva az Elemzés és Játék mellé
 - `nuxt.config.ts`: `twisty-player` custom element regisztrálva
 
+### Patch-ek
+
+| Patch | Hiba | Megoldás |
+|-------|------|----------|
+| `iter-05-patch-01-cube-component.md` | Rubik-kocka komponens nem renderelt (Nuxt auto-import + twisty-player race condition) | Explicit import a cube.vue-ban; programmatic twisty-player létrehozás `onMounted`-ban |
+| `iter-05-patch-02-face-moves.md` | Kocka egyes lapjai nem forgathatók egérrel | TwistyPlayer constructor-os inicializálás setAttribute helyett |
+| `iter-05-patch-03-pg3d-renderer.md` | Layer rotation nem működött Cube3D vizualizációval | Vizualizáció `3D` → `PG3D`; kocka méret 400px → 480px |
+| `iter-05-patch-04-mobile-layout.md` | Mobil: fehér csík jobbra, koordináták elcsúszva, nav linkek szétcsúsztak | Teljes szélességű layout mobilon; chessground koordináta CSS override; hamburger menü drawer; sticky navbar; iChessy branding; Fehér/Fekete feliratok eltávolítva |
+
 ---
 
 ## Jövőbeli modulok (nem ütemezett)

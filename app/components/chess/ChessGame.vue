@@ -105,14 +105,10 @@ defineExpose({ applyOpponentMove, fen, gamePgn })
 
 <template>
   <div
-    class="game-container flex flex-col lg:flex-row lg:items-stretch gap-4 w-full mx-auto px-2 lg:px-0 lg:h-[min(80vh,600px)] overflow-hidden lg:overflow-visible"
+    class="game-container flex flex-col lg:flex-row lg:items-stretch gap-4 w-full mx-auto lg:h-[min(80vh,600px)] overflow-hidden lg:overflow-visible"
   >
     <!-- Board column — single instance, responsive sizing via CSS -->
     <div class="board-col shrink-0">
-      <div class="text-xs text-gray-400 text-center py-0.5">
-        {{ playerColor === 'white' ? 'Fekete' : 'Fehér' }}
-      </div>
-
       <ClientOnly>
         <ChessBoard
           :fen="fen"
@@ -128,10 +124,6 @@ defineExpose({ applyOpponentMove, fen, gamePgn })
           <div class="w-full bg-gray-800 rounded animate-pulse" style="aspect-ratio: 1" />
         </template>
       </ClientOnly>
-
-      <div class="text-xs text-gray-200 text-center font-medium py-0.5">
-        {{ playerColor === 'white' ? 'Fehér (Te)' : 'Fekete (Te)' }}
-      </div>
     </div>
 
     <!-- Controls panel -->
@@ -151,7 +143,7 @@ defineExpose({ applyOpponentMove, fen, gamePgn })
     />
 
     <!-- History panel -->
-    <div class="w-full lg:w-44 shrink-0 flex flex-col gap-2 bg-gray-800 rounded-lg p-3 overflow-hidden h-24 lg:h-auto lg:max-h-none">
+    <div class="w-full lg:w-44 shrink-0 flex flex-col gap-2 bg-gray-800 rounded-none lg:rounded-lg p-3 overflow-hidden h-24 lg:h-auto lg:max-h-none">
       <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider shrink-0">
         JÁTSZMALAP
       </div>

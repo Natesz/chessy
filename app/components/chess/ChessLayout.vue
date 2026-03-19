@@ -30,7 +30,7 @@ defineEmits<{
 
 <template>
   <div
-    class="layout-container flex flex-col lg:flex-row lg:items-stretch gap-3 w-full mx-auto px-2 lg:px-0 lg:h-[min(80vh,600px)]"
+    class="layout-container flex flex-col lg:flex-row lg:items-stretch gap-3 w-full mx-auto lg:h-[min(80vh,600px)]"
   >
     <!-- Eval bar — desktop only -->
     <ClientOnly>
@@ -61,7 +61,7 @@ defineEmits<{
 
     <!-- Right panel: analysis lines + move history + nav -->
     <ClientOnly>
-      <div class="w-full lg:flex-1 flex flex-col gap-2 min-w-0 bg-gray-800 rounded-lg p-3 overflow-hidden">
+      <div class="w-full lg:flex-1 flex flex-col gap-2 min-w-0 bg-gray-800 rounded-none lg:rounded-lg p-3 overflow-hidden">
         <!-- Analysis lines -->
         <ChessAnalysisLines :lines="analysisLines" :is-analyzing="isAnalyzing" />
 
