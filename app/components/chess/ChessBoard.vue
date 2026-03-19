@@ -133,6 +133,8 @@ function initChessground() {
         },
       },
     },
+    coordinates: true,
+    coordinatesOnSquares: true,
     draggable: { enabled: true },
     selectable: { enabled: true },
     highlight: { lastMove: true, check: true },
