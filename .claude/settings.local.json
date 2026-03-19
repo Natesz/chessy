@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:js.cubing.net)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:experiments.cubing.net)",
+      "WebFetch(domain:medium.com)",
+      "Bash(cd:*)",
+      "Bash(npx nuxi:*)"
+    ]
+  }
+}
