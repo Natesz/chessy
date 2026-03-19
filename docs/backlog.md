@@ -204,6 +204,7 @@ Ez a fájl minden iteráció és patch után frissítendő. Rögzíti, mi kész�
 | `iter-05-patch-02-face-moves.md` | Kocka egyes lapjai nem forgathatók egérrel | TwistyPlayer constructor-os inicializálás setAttribute helyett |
 | `iter-05-patch-03-pg3d-renderer.md` | Layer rotation nem működött Cube3D vizualizációval | Vizualizáció `3D` → `PG3D`; kocka méret 400px → 480px |
 | `iter-05-patch-04-mobile-layout.md` | Mobil: fehér csík jobbra, koordináták elcsúszva, nav linkek szétcsúsztak | Teljes szélességű layout mobilon; chessground koordináta CSS override; hamburger menü drawer; sticky navbar; iChessy branding; Fehér/Fekete feliratok eltávolítva |
+| `iter-05-patch-05-sticky-nav-fixes.md` | Sticky nav nem működött; gap a nav és tábla között Játék módban; koordináták középen a mezőben; Kocka scramble worker hiba mobilon | `overflow-x-clip` (sticky fix); `justify-start` mobilon (gap fix); koordináta CSS bal alsó sarok; scramble fallback generátor |
 
 ---
 

@@ -36,6 +36,8 @@ Az alkalmazás jelenleg egy teljes értékű sakktáblát tartalmaz, amelyen:
 - **Hamburger menü** – mobilon a navigációs linkek egy jobb oldalról kinyíló menübe kerültek; az alkalmazás neve iChessy-re változott
 - **Teljes szélességű tábla** – a sakktábla és az alatta lévő panelek most mobilon is kitöltik a képernyő teljes szélességét, nincs fehér csík az oldalakon
 - **Fix fejléc** – a navigációs sáv görgetéskor mindig a képernyő tetején marad
+- **Koordináták** – a sakktábla sorai és oszlopai (A-H, 1-8) most a mezők bal alsó sarkában jelennek meg
+- **Rubik-kocka keverés javítva** – mobilon a keverés gomb most is működik, még ha a speciális keverő modul nem is elérhető
 
 ---
 

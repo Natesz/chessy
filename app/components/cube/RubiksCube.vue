@@ -36,14 +36,35 @@ function formatTime(ms: number): string {
   return `${seconds}.${centis.toString().padStart(2, '0')}`
 }
 
+function generateSimpleScramble(length = 20): string {
+  const faces = ['U', 'D', 'L', 'R', 'F', 'B']
+  const modifiers = ['', "'", '2']
+  const moves: string[] = []
+  let lastFace = ''
+  for (let i = 0; i < length; i++) {
+    let face: string
+    do { face = faces[Math.floor(Math.random() * faces.length)]! } while (face === lastFace)
+    lastFace = face
+    moves.push(face + modifiers[Math.floor(Math.random() * modifiers.length)]!)
+  }
+  return moves.join(' ')
+}
+
 async function handleShuffle() {
   if (!twistyPlayer) return
 
-  const { randomScrambleForEvent } = await import('cubing/scramble')
-  const scramble = await randomScrambleForEvent('333')
-  scrambleMoves.value = scramble.toString()
+  let scramble: string
+  try {
+    const { randomScrambleForEvent } = await import('cubing/scramble')
+    const result = await randomScrambleForEvent('333')
+    scramble = result.toString()
+  }
+  catch {
+    scramble = generateSimpleScramble()
+  }
 
-  twistyPlayer.alg = scrambleMoves.value
+  scrambleMoves.value = scramble
+  twistyPlayer.alg = scramble
   twistyPlayer.timestamp = 'end'
 
   phase.value = 'idle'

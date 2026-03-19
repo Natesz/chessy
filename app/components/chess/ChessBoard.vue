@@ -188,12 +188,20 @@ onUnmounted(() => cg?.destroy())
 @import 'chessground/assets/chessground.cburnett.css';
 
 /* Fix coordinate positioning — default chessground uses offsets (top:-20px, left:24px)
-   that assume external padding around the board. Override to place inside the board. */
+   that assume external padding around the board. Override to place inside the board,
+   bottom-left corner of each edge square. */
 .cg-wrap coords.ranks {
   top: 0;
 }
+.cg-wrap coords.ranks coord {
+  transform: translateY(80%);
+}
 .cg-wrap coords.files {
   left: 0;
-  bottom: 0;
+  bottom: 2px;
+  text-align: left;
+}
+.cg-wrap coords.files coord {
+  padding-left: 2px;
 }
 </style>
