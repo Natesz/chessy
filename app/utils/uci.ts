@@ -1,6 +1,13 @@
 import { Chess } from 'chess.js'
 import type { EvalResult } from '~/types/chess'
 
+/**
+ * Stockfish 18 lite, single-threaded: a (kis) NNUE háló a WASM-ba van építve,
+ * nem kell SharedArrayBuffer / COOP-COEP. (A korábbi SF16 single build NNUE nélkül,
+ * „classical evaluation”-nel futott → pontatlan értékelés.)
+ */
+export const STOCKFISH_WORKER_URL = '/stockfish/stockfish-18-lite-single.js'
+
 /** UCI lépéssor → SAN lista; az első illegális lépésnél megáll */
 export function uciMovesToSan(fen: string, uciMoves: string[]): string[] {
   const chess = new Chess(fen)

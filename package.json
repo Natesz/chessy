@@ -7,7 +7,7 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare && mkdir -p public/stockfish && cp node_modules/stockfish/src/stockfish-nnue-16-single.js public/stockfish/ && cp node_modules/stockfish/src/stockfish-nnue-16-single.wasm public/stockfish/",
+    "postinstall": "nuxt prepare && rm -rf public/stockfish && mkdir -p public/stockfish && cp node_modules/stockfish/bin/stockfish-18-lite-single.js public/stockfish/ && cp node_modules/stockfish/bin/stockfish-18-lite-single.wasm public/stockfish/",
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed"
   },
@@ -16,7 +16,7 @@
     "chess.js": "^1.3.0",
     "chessground": "^9.1.1",
     "cubing": "^0.63.3",
-    "stockfish": "^16.0.0"
+    "stockfish": "^18.0.8"
   },
   "devDependencies": {
     "@nuxtjs/tailwindcss": "^6.12.0",

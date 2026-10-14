@@ -26,7 +26,7 @@ Ez a fájl minden munkamenetben automatikusan betöltődik. Tartsd be az itt le�
 | Pinia | – | State management |
 | chess.js | ^1.3.0 | Szabálymotor (legális lépések, FEN, PGN) |
 | chessground | ^9.2.1 | Interaktív tábla UI (Lichess-alapú) |
-| stockfish | ^16.0.0 | WASM pozícióelemző, Web Worker-ben fut |
+| stockfish | ^18.0.8 | WASM pozícióelemző (18 lite single, beépített NNUE), Web Worker-ben fut |
 | Supabase | – | Backend (csak saját adatokhoz, ingyenes tier) |
 | cubing | ^0.63.3 | Rubik-kocka 3D UI (twisty-player web component) |
 
@@ -93,7 +93,8 @@ app/
 
 **Stockfish:**
 - `public/stockfish/` — JS wrapper + WASM ide kerül (`postinstall` script másolja `node_modules`-ból)
-- Worker betöltés: `new Worker('/stockfish/stockfish-nnue-16-single.js', { type: 'classic' })`
+- Worker betöltés: `new Worker(STOCKFISH_WORKER_URL, { type: 'classic' })` — `app/utils/uci.ts`: `/stockfish/stockfish-18-lite-single.js` (explicit importtal)
+- A 18 lite single WASM-ba épített NNUE hálóval fut (~7 MB); a korábbi SF16 single build NNUE nélkül, „classical evaluation”-nel futott → pontatlan eval. A teljes háló (113 MB) webre túl nagy
 - Single-threaded verzió, nem kell SharedArrayBuffer
 - Web Worker-ként fut, nem blokkolja a UI thread-et
 

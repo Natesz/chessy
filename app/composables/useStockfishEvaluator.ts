@@ -1,4 +1,5 @@
 import type { AnalysisLine } from '~/types/chess'
+import { STOCKFISH_WORKER_URL } from '~/utils/uci'
 
 interface PendingEval {
   fen: string
@@ -23,7 +24,7 @@ export function useStockfishEvaluator() {
   function init() {
     if (worker || !import.meta.client) return
     destroyed = false
-    worker = new Worker('/stockfish/stockfish-nnue-16-single.js', { type: 'classic' })
+    worker = new Worker(STOCKFISH_WORKER_URL, { type: 'classic' })
     worker.onerror = e => console.error('[Stockfish evaluator] worker error:', e)
 
     let markReady: () => void = () => {}

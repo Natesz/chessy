@@ -19,7 +19,10 @@ const PREFETCH = 1 // 1 előre betöltött állás → a „Következő” azonn
 const MAX_ATTEMPTS = 15 // kiértékelt jelölt pozíciók száma egy feladványhoz
 const POSITIONS_PER_GAME = 2
 const MIN_MOVE_GAMES = 20 // random walk: ennél kevesebb játszmás lépést nem választunk
-const ENGINE_DEPTH = 16
+// Kétlépcsős értékelés: gyors szűrés lazított határokkal, majd alapos ellenőrzés szigorúan
+const SCREEN_DEPTH = 12
+const CONFIRM_DEPTH = 20
+const SCREEN_MARGIN = 0.7 // gyalogegység: ennyivel lazább határok a gyors szűrésnél
 
 export const DEFAULT_SETTINGS: TrainingSettings = {
   openingId: 'any',
@@ -127,6 +130,17 @@ export function classifyPosition(
     case 'puzzle': return tryPuzzle()
     case 'onlymove': return tryOnlyMove()
     case 'mixed': return tryPuzzle() ?? tryOnlyMove() ?? tryClassic()
+  }
+}
+
+/** Lazított határok a gyors (kis mélységű) szűréshez, hogy ne dobjunk el határeseteket */
+function screenSettings(s: TrainingSettings): TrainingSettings {
+  return {
+    ...s,
+    minAdvantage: Math.max(0, s.minAdvantage - SCREEN_MARGIN),
+    maxAdvantage: s.maxAdvantage + SCREEN_MARGIN,
+    gap: Math.max(0, s.gap - SCREEN_MARGIN),
+    equalThreshold: s.equalThreshold + SCREEN_MARGIN,
   }
 }
 
@@ -254,9 +268,12 @@ export function useTrainingSession() {
       for (const c of buildCandidates(game, play.length, s)) {
         attempts++
         if (!current.value) searchAttempt.value = attempts
-        const lines = await evaluator.evaluate(c.fen, ENGINE_DEPTH, 3)
-        if (gen !== generation) throw new Error('stale')
         const turn = c.fen.split(' ')[1] as 'w' | 'b'
+        const quick = await evaluator.evaluate(c.fen, SCREEN_DEPTH, 3)
+        if (gen !== generation) throw new Error('stale')
+        if (!classifyPosition(turn, quick, screenSettings(s))) continue
+        const lines = await evaluator.evaluate(c.fen, CONFIRM_DEPTH, 3)
+        if (gen !== generation) throw new Error('stale')
         const cls = classifyPosition(turn, lines, s)
         if (!cls) continue
         return {

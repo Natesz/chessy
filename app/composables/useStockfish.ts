@@ -1,4 +1,5 @@
 import type { AnalysisLine, EvalResult } from '~/types/chess'
+import { STOCKFISH_WORKER_URL } from '~/utils/uci'
 
 export function useStockfish() {
   let worker: Worker | null = null
@@ -44,7 +45,7 @@ export function useStockfish() {
   function init() {
     if (worker || !import.meta.client) return
 
-    worker = new Worker('/stockfish/stockfish-nnue-16-single.js', { type: 'classic' })
+    worker = new Worker(STOCKFISH_WORKER_URL, { type: 'classic' })
 
     worker.onerror = (e) => {
       console.error('[Stockfish] worker error:', e)
