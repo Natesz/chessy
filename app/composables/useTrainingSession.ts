@@ -20,6 +20,7 @@ const STATS_KEY = 'chessy-training-stats'
 const PREFETCH = 1 // 1 előre betöltött állás → a „Következő” azonnali
 const MAX_GAMES = 25 // ennyi játszmát vizsgálunk meg egy feladványhoz (a puzzle-állások ritkák)
 const CONFIRMS_PER_GAME = 3 // játszmánként max. ennyi esélyes állás kap mély ellenőrzést
+const MAX_WALKS = 12 // explorer-séták felső korlátja egy feladványhoz (kérésszám-korlát)
 const MIN_MOVE_GAMES = 20 // random walk: ennél kevesebb játszmás lépést nem választunk
 // Kétlépcsős értékelés: a szakasz MINDEN állása gyors szűrést kap lazított határokkal,
 // az esélyesek alapos ellenőrzést szigorú határokkal (a ritka puzzle-állások ne csússzanak ki)
@@ -261,6 +262,50 @@ export function useTrainingSession() {
     return candidates
   }
 
+  /** Egy játszma átvizsgálása: a szakasz összes állása gyors szűrés, az esélyesek mély ellenőrzés */
+  async function scanGame(
+    game: LichessGame,
+    walkPlies: number,
+    s: TrainingSettings,
+    gen: number,
+    openingName: string,
+  ): Promise<TrainingPosition | null> {
+    // 1. gyors szűrés a szakasz összes állására
+    const promising: Candidate[] = []
+    for (const c of buildCandidates(game, walkPlies, s)) {
+      const turn = c.fen.split(' ')[1] as 'w' | 'b'
+      const quick = await evaluator.evaluate(c.fen, SCREEN_DEPTH, 2)
+      if (gen !== generation) throw new Error('stale')
+      if (classifyPosition(turn, quick, s, SCREEN_MARGIN)) promising.push(c)
+    }
+
+    // 2. alapos ellenőrzés véletlen sorrendben
+    for (const c of shuffle(promising).slice(0, CONFIRMS_PER_GAME)) {
+      const turn = c.fen.split(' ')[1] as 'w' | 'b'
+      const lines = await evaluator.evaluate(c.fen, CONFIRM_DEPTH, 2)
+      if (gen !== generation) throw new Error('stale')
+      const cls = classifyPosition(turn, lines, s)
+      if (!cls) continue
+      return {
+        id: `${game.id}-${c.ply}`,
+        fen: c.fen,
+        turn,
+        ply: c.ply,
+        lastMoveSan: c.lastMoveSan,
+        gameId: game.id,
+        white: player(game.players.white),
+        black: player(game.players.black),
+        gameOpening: game.opening?.name ?? null,
+        openingLabel: openingName,
+        kind: cls.kind,
+        evalWhite: lines[0]!.score,
+        lines,
+        correct: cls.correct,
+      }
+    }
+    return null
+  }
+
   async function generateOne(gen: number): Promise<TrainingPosition> {
     const s = { ...settings.value }
     const opening = openingResolved.value
@@ -268,60 +313,31 @@ export function useTrainingSession() {
 
     let gamesTried = 0
     let walks = 0
-    while (gamesTried < MAX_GAMES && walks < MAX_GAMES * 3) {
+    while (gamesTried < MAX_GAMES && walks < MAX_WALKS) {
       walks++
       const { play, games } = await randomWalk(opening.uci, s)
       if (gen !== generation) throw new Error('stale')
-      const fresh = games.filter(g => !usedGameIds.has(g.id))
-      const ref = fresh[randInt(0, fresh.length - 1)]
-      if (!ref) {
+      const fresh = shuffle(games.filter(g => !usedGameIds.has(g.id)))
+      if (!fresh.length) {
         if (!games.length && play.length === opening.uci.length) {
           throw new NoPositionError('Ehhez a megnyitáshoz és értékszám-tartományhoz nem találtam játszmát a Lichess adatbázisban.')
         }
         continue
       }
-      usedGameIds.add(ref.id)
 
-      // Egy hívással a csomópont összes friss játszmája (cache-be), utána a kiválasztott
+      // Egy hívással a csomópont összes friss játszmája; mindet végignézzük,
+      // mielőtt újabb explorer-sétát indítanánk (kevesebb Lichess kérés → nincs 429)
       await api.fetchGames(fresh.map(g => g.id))
-      const game = await api.fetchGame(ref.id)
       if (gen !== generation) throw new Error('stale')
-      if (!game) continue
-      gamesTried++
-      if (!current.value) searchAttempt.value = gamesTried
-
-      // 1. gyors szűrés a szakasz összes állására
-      const promising: Candidate[] = []
-      for (const c of buildCandidates(game, play.length, s)) {
-        const turn = c.fen.split(' ')[1] as 'w' | 'b'
-        const quick = await evaluator.evaluate(c.fen, SCREEN_DEPTH, 2)
-        if (gen !== generation) throw new Error('stale')
-        if (classifyPosition(turn, quick, s, SCREEN_MARGIN)) promising.push(c)
-      }
-
-      // 2. alapos ellenőrzés véletlen sorrendben
-      for (const c of shuffle(promising).slice(0, CONFIRMS_PER_GAME)) {
-        const turn = c.fen.split(' ')[1] as 'w' | 'b'
-        const lines = await evaluator.evaluate(c.fen, CONFIRM_DEPTH, 2)
-        if (gen !== generation) throw new Error('stale')
-        const cls = classifyPosition(turn, lines, s)
-        if (!cls) continue
-        return {
-          id: `${game.id}-${c.ply}`,
-          fen: c.fen,
-          turn,
-          ply: c.ply,
-          lastMoveSan: c.lastMoveSan,
-          gameId: game.id,
-          white: player(game.players.white),
-          black: player(game.players.black),
-          gameOpening: game.opening?.name ?? null,
-          openingLabel: opening.name,
-          kind: cls.kind,
-          evalWhite: lines[0]!.score,
-          lines,
-          correct: cls.correct,
-        }
+      for (const ref of fresh) {
+        if (gamesTried >= MAX_GAMES) break
+        usedGameIds.add(ref.id)
+        const game = await api.fetchGame(ref.id) // cache-ből, nincs új kérés
+        if (!game) continue
+        gamesTried++
+        if (!current.value) searchAttempt.value = gamesTried
+        const pos = await scanGame(game, play.length, s, gen, opening.name)
+        if (pos) return pos
       }
     }
     throw new NoPositionError('Nem találtam a beállításoknak megfelelő állást – lazíts a szűrőkön (pl. előny-tartomány, különbség).')

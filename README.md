@@ -42,6 +42,7 @@ Az alkalmazás jelenleg egy teljes értékű sakktáblát tartalmaz, amelyen:
 - **Javítás (patch-02)**: a beállítások módosítása azonnal érvényes a következő állásra; a válasz után csak az eredeti játszma linkje jelenik meg
 - **Pontosabb gépi elemzés (patch-03)**: a beépített sakkmotor egy hiba miatt eddig a gyengébb üzemmódjában futott; mostantól a modern, neurális hálós kiértékelést használja, így az értékelések sokkal közelebb állnak a Lichess-en láthatókhoz – az elemző és a játék oldalon is
 - **Puzzle-keresés javítva + értékszám-szűrő (patch-04)**: a puzzle-típusú állások keresése egy hiba miatt túl szigorú volt, ez javítva, és a program most alaposabban átnézi a játszmákat; csúszkával beállítható, milyen értékszámú játékosok játszmáiból jöjjenek az állások
+- **Kevesebb lekérdezés (patch-05)**: az alkalmazás jóval kevesebbszer fordul a Lichess-hez, így ritkán kell kivárni a „lassítás” szünetet
 
 ---
 

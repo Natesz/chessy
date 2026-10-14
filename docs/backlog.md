@@ -234,6 +234,7 @@ Ez a fájl minden iteráció és patch után frissítendő. Rögzíti, mi kész�
 | `iter-06-patch-02-prefetch-settings.md` | Beállítás-váltás után még a régi beállítással előtöltött állások jöttek; felesleges „Elemzés a Lichessen” link; „erős játékosok” szöveg | Előtöltés 2 → 1; beállítás-váltáskor (400 ms debounce) előtöltött állás eldobva + új keresés; csak játszma-link marad; login szöveg pontosítva |
 | `iter-06-patch-03-stockfish-nnue.md` | Edzés eval sokszor nagyon eltért a Lichess elemzőtől (+0.7 vs +1.6, −2.6 vs −6) | Gyökérok: SF16 single build NNUE háló nélkül („classical evaluation enabled”) futott; csere Stockfish 18 lite single-re (beépített NNUE), az egész appban; edzésben kétlépcsős értékelés: depth 12 szűrés lazított határokkal → depth 20 ellenőrzés |
 | `iter-06-patch-04-puzzle-search-elo.md` | Puzzle mód nem talált állást (pl. Jobava London, 10–15. lépés, gap ≥ 1, előny 1–5.5, egyenlő < 1); ELO szűrő hiányzott | Bug: gyors szűrésnél az egyenlő-küszöb felfelé lazult → puzzle alsó határ szigorodott; `classifyPosition(…, margin)` minden határt megengedő irányba tol. Játszmánként a szakasz összes állása gyors szűrést kap (2 véletlen helyett), max 25 játszma, MultiPV 2. Új ELO csúszka (800–2800, 100-as lépés, két játékos átlaga) |
+| `iter-06-patch-05-fewer-requests.md` | „A Lichess lassításra kért – 1 perc szünet” (429) puzzle módban | Egy explorer-csomópont mind a ~8 letöltött játszmáját átvizsgáljuk új séta előtt (korábban csak 1-et → ~5–8× több explorer kérés); max 12 séta / feladvány; min. 500 ms szünet a Lichess kérések között |
 
 ---
 

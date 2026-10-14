@@ -43,9 +43,27 @@ const explorerCache = new Map<string, ExplorerResponse>()
 const gameCache = new Map<string, LichessGame>()
 const rateLimitedUntil = ref(0)
 let queue: Promise<unknown> = Promise.resolve()
+const MIN_GAP_MS = 500 // két Lichess kérés között legalább ennyi szünet (429 megelőzése)
+let lastRequestAt = 0
 
 function sleep(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms))
+}
+
+/** Sorba állítja a kérést, és kivárja a minimális szünetet az előző óta */
+function enqueue<T>(fn: () => Promise<T>): Promise<T> {
+  const run = queue.then(async () => {
+    const wait = lastRequestAt + MIN_GAP_MS - Date.now()
+    if (wait > 0) await sleep(wait)
+    try {
+      return await fn()
+    }
+    finally {
+      lastRequestAt = Date.now()
+    }
+  })
+  queue = run.catch(() => {})
+  return run
 }
 
 export function useLichessApi() {
@@ -71,9 +89,7 @@ export function useLichessApi() {
   }
 
   function request<T>(url: string): Promise<T> {
-    const run = queue.then(() => doRequest<T>(url))
-    queue = run.catch(() => {})
-    return run
+    return enqueue(() => doRequest<T>(url))
   }
 
   /** ratings: explorer rating csoportok (üres = mind). Nincs speed szűrés: minden tempó mehet */
@@ -102,9 +118,7 @@ export function useLichessApi() {
   async function fetchGames(ids: string[]): Promise<void> {
     const missing = [...new Set(ids)].filter(id => !gameCache.has(id))
     if (!missing.length) return
-    const run = queue.then(() => doFetchGames(missing))
-    queue = run.catch(() => {})
-    await run
+    await enqueue(() => doFetchGames(missing))
   }
 
   async function doFetchGames(ids: string[], retry = true): Promise<void> {
