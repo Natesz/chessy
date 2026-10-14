@@ -35,19 +35,42 @@ export interface ResolvedOpening {
   fen: string
 }
 
+export const MAX_CUSTOM_MOVES = 10 // egyedi lépéssor: max. ennyi lépéspár
+
+// Magyar figurajelölés → angol SAN (K király, V vezér, B bástya, F futó, H huszár)
+const HU_TO_EN: Record<string, string> = { K: 'K', V: 'Q', B: 'R', F: 'B', H: 'N' }
+
 /**
- * SAN lépéssor (move number-ekkel vagy anélkül) → UCI lista.
+ * Magyar jelölésű lépés → angol SAN. Pl. "Hc3" → "Nc3", "Bxe1" → "Rxe1",
+ * "0-0" → "O-O", "e8=V" / "e8V" → "e8=Q". A kisbetűs (gyalog/oszlop) részek változatlanok.
+ */
+export function hungarianToSan(token: string): string {
+  let t = token.replace(/[!?]+$/, '')
+  if (/^[0O]-[0O](-[0O])?[+#]?$/.test(t)) return t.replace(/0/g, 'O')
+  // Gyalog-átváltozás: e8V, e8=V, dxe8=H+ …
+  const promo = t.match(/^([a-h](?:x[a-h])?[18])=?([VBFH])([+#]?)$/)
+  if (promo) return `${promo[1]}=${HU_TO_EN[promo[2]!]}${promo[3]}`
+  return t.replace(/^([KVBFH])/, (_, p: string) => HU_TO_EN[p]!)
+}
+
+/**
+ * SAN lépéssor (move number-ekkel vagy anélkül, szóközzel vagy vesszővel) → UCI lista.
+ * notation = 'hu': magyar figurajelölés (egyedi lépéssor); 'en': angol (presetek).
  * Hibás lépésnél kivételt dob a hibás lépés nevével.
  */
-export function parseOpeningMoves(text: string): { uci: string[], fen: string } {
+export function parseOpeningMoves(text: string, notation: 'en' | 'hu' = 'en'): { uci: string[], fen: string } {
   const tokens = text
     .replace(/\{[^}]*\}/g, ' ')
-    .split(/\s+/)
+    .split(/[\s,;]+/)
     .map(t => t.replace(/^\d+\.+/, '').trim())
     .filter(t => t && !/^(1-0|0-1|1\/2-1\/2|\*)$/.test(t))
+  if (notation === 'hu' && tokens.length > MAX_CUSTOM_MOVES * 2) {
+    throw new Error(`Legfeljebb ${MAX_CUSTOM_MOVES} lépés adható meg.`)
+  }
   const chess = new Chess()
   const uci: string[] = []
-  for (const san of tokens) {
+  for (const token of tokens) {
+    const san = notation === 'hu' ? hungarianToSan(token) : token
     let move
     try {
       move = chess.move(san)
@@ -55,7 +78,7 @@ export function parseOpeningMoves(text: string): { uci: string[], fen: string } 
     catch {
       move = null
     }
-    if (!move) throw new Error(`Érvénytelen lépés: ${san}`)
+    if (!move) throw new Error(`Érvénytelen lépés: ${token}`)
     uci.push(move.from + move.to + (move.promotion ?? ''))
   }
   return { uci, fen: chess.fen() }

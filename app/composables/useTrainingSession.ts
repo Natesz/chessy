@@ -193,7 +193,7 @@ export function useTrainingSession() {
     const s = settings.value
     if (s.openingId === 'custom') {
       try {
-        const { uci } = parseOpeningMoves(s.customMoves)
+        const { uci } = parseOpeningMoves(s.customMoves, 'hu')
         return { name: s.customMoves.trim() || 'Egyedi', uci, error: null }
       }
       catch (e) {

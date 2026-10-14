@@ -62,4 +62,39 @@ test.describe('Training page', () => {
     expect(href).toMatch(/^https:\/\/lichess\.org\/testgame1(\/black)?#(1[6-9]|20)$/)
     await expect(page.locator('[data-testid="training-stats"]')).toContainText('1 válasz')
   })
+
+  test('custom move list in Hungarian notation is sent to the explorer', async ({ page }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem('chessy-lichess-auth', JSON.stringify({
+        token: 'test-token', expiresAt: Date.now() + 86400_000, username: 'tester',
+      }))
+      localStorage.removeItem('chessy-training-settings')
+    })
+    const plays: string[] = []
+    await page.route('https://explorer.lichess.ovh/**', (route) => {
+      plays.push(new URL(route.request().url()).searchParams.get('play') ?? '')
+      return route.fulfill({ json: { moves: [], topGames: [], recentGames: [] } })
+    })
+    await page.route('https://lichess.org/api/account', route => route.fulfill({ json: { username: 'tester' } }))
+
+    await page.goto('/training')
+    await page.selectOption('[data-testid="training-opening"]', 'custom')
+    const input = page.locator('[data-testid="training-custom-moves"]')
+    const error = page.locator('[data-testid="training-custom-error"]')
+
+    // B = bástya (magyar) → "Bf4" itt szabálytalan, nem futóként értelmezzük
+    await input.fill('1. d4, d5 2. Bf4')
+    await expect(error).toContainText('Bf4')
+
+    // Túl hosszú lépéssor (11 lépés)
+    await input.fill('1. Hf3, Hf6 2. Hg1, Hg8 3. Hf3, Hf6 4. Hg1, Hg8 5. Hf3, Hf6 6. Hg1, Hg8 7. Hf3, Hf6 8. Hg1, Hg8 9. Hf3, Hf6 10. Hg1, Hg8 11. e4')
+    await expect(error).toContainText('Legfeljebb 10')
+
+    // Sánc 0-0, futó F, huszár H
+    await input.fill('1. e4, e5 2. Hf3, Hc6 3. Fc4, Fc5 4. 0-0, Hf6')
+    await expect(error).toHaveCount(0)
+    await page.click('[data-testid="training-start"]')
+    await expect(page.locator('[data-testid="training-error"]')).toBeVisible({ timeout: 15000 })
+    expect(plays[0]).toBe('e2e4,e7e5,g1f3,b8c6,f1c4,f8c5,e1g1,g8f6')
+  })
 })

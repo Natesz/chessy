@@ -7,7 +7,7 @@ export type TrainingAnswer = 'white' | 'equal' | 'black'
 
 export interface TrainingSettings {
   openingId: string // preset id vagy 'custom'
-  customMoves: string // egyedi lépéssor (SAN, pl. "1. d4 d5 2. Nc3")
+  customMoves: string // egyedi lépéssor, magyar jelöléssel (pl. "1. d4, d5 2. Hc3, Hf6")
   mode: TrainingMode
   minAdvantage: number // gyalogegységben
   maxAdvantage: number // MAX_ADVANTAGE_CAP = nincs felső korlát

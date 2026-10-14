@@ -71,18 +71,21 @@ function setMaxPly(v: number) {
         <option v-for="o in OPENING_PRESETS" :key="o.id" :value="o.id">
           {{ o.name }}
         </option>
-        <option value="custom">Egyedi lépéssor…</option>
+        <option value="custom">Saját lépéssor…</option>
       </select>
     </label>
     <div v-if="settings.openingId === 'custom'" class="flex flex-col gap-1">
-      <input
+      <textarea
         v-model="settings.customMoves"
-        type="text"
-        placeholder="pl. 1. d4 d5 2. Nc3 Nf6 3. Bf4"
-        class="bg-gray-700 border border-gray-600 rounded px-2 py-1.5 text-sm font-mono"
-      >
-      <span v-if="openingError" class="text-xs text-red-400">{{ openingError }}</span>
-      <span v-else class="text-xs text-gray-500">Angol jelölés (N, B, R, Q, K).</span>
+        rows="2"
+        placeholder="pl. 1. d4, d5 2. Hc3, Hf6 3. Ff4, Ff5"
+        class="bg-gray-700 border border-gray-600 rounded px-2 py-1.5 text-sm font-mono resize-none"
+        data-testid="training-custom-moves"
+      />
+      <span v-if="openingError" class="text-xs text-red-400" data-testid="training-custom-error">{{ openingError }}</span>
+      <span v-else class="text-xs text-gray-500">
+        Magyar jelölés, max. {{ MAX_CUSTOM_MOVES }} lépés: K király, V vezér, B bástya, F futó, H huszár; sánc 0-0 / 0-0-0.
+      </span>
     </div>
 
     <!-- Mód -->
