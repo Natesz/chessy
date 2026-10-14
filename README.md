@@ -31,6 +31,16 @@ Az alkalmazás jelenleg egy teljes értékű sakktáblát tartalmaz, amelyen:
 
 ---
 
+## Pozíció-értékelő edzés (Iteráció 06)
+
+- **Új „Edzés” menüpont**: az oldal valódi, erős játékosok online játszmáiból mutat állásokat, és neked kell eldöntened, hogy Világos, Sötét áll jobban, vagy egyenlő az állás
+- **Testreszabható**: kiválasztható a megnyitás (pl. Caro-Kann, Jobava London vagy saját lépéssor), az előny nagysága, és hogy klasszikus, „puzzle-szerű” (egyetlen nyerő lépés) vagy „egyenlő, de pontos lépés kell” típusú állásokat kérj
+- **Pontszámítás**: pontok, sorozat és rekord, megnyitásonkénti pontossággal – a böngészőben megmarad
+- **Lichess link**: válasz után egy kattintással megnyitható az eredeti játszma pontosan az adott lépésnél, hogy ott elemezd tovább
+- A funkcióhoz egyszeri, ingyenes Lichess-bejelentkezés szükséges
+
+---
+
 ## Mobil élmény javítások (Iteráció 05 – patch-04)
 
 - **Hamburger menü** – mobilon a navigációs linkek egy jobb oldalról kinyíló menübe kerültek; az alkalmazás neve iChessy-re változott

@@ -13,6 +13,7 @@ watch(() => route.path, () => {
 const navLinks = [
   { to: '/analysis', label: 'Elemzés', disabled: false },
   { to: '/play', label: 'Játék', disabled: false },
+  { to: '/training', label: 'Edzés', disabled: false },
   { to: '/cube', label: 'Kocka', disabled: false },
   { to: '/puzzle', label: 'Puzzle', disabled: true },
 ] as const

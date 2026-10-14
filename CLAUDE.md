@@ -41,6 +41,7 @@ app/
     chess.vue                  # redirect → /analysis (backward compat)
     analysis.vue               # elemzés főoldal (ssr: false)
     play.vue                   # játék mód – AI vagy 1v1 (ssr: false)
+    training.vue               # pozíció-értékelő edzés – Lichess állások (ssr: false)
     cube.vue                   # Rubik-kocka kirakó (ssr: false)
   layouts/
     default.vue                # top nav (AppNav) + slot wrapper
@@ -58,18 +59,28 @@ app/
       ChessFenPgnLoader.vue    # FEN + PGN betöltő panel (Iteráció 03)
       ChessGame.vue            # játék layout (tábla + kontroll panel)
       ChessGameControls.vue    # setup/playing/finished fázis UI
+      ChessTrainingPanel.vue   # „Ki áll jobban?” gombok, eredmény, Lichess linkek
+      ChessTrainingSettings.vue # megnyitás, mód, előny-tartomány, gap stb.
+      ChessTrainingStats.vue   # pont, sorozat, pontosság (localStorage)
   composables/
     useChessHistory.ts         # fa struktúra alapú lépés state; reset(startFen?) shallowRef+triggerRef
     useStockfish.ts            # Web Worker lifecycle, eval state, position cache
     useStockfishPlayer.ts      # depth-limited AI move composable
     useGameRoom.ts             # Supabase Realtime 1v1 szoba
     usePgnParser.ts            # rekurzív descent PGN parser; tokenize + parseTokens + variation handling
+    useLichessAuth.ts          # Lichess OAuth2 PKCE (explorer API tokent igényel)
+    useLichessApi.ts           # explorer + game export, szekvenciális queue, 429 kezelés
+    useStockfishEvaluator.ts   # Promise-alapú, sorba állított Stockfish értékelő (saját worker)
+    useTrainingSession.ts      # edzés pipeline: random walk → játszma → eval → osztályozás
   utils/
     san.ts                     # formatSan: SAN → Unicode figuraikonok (auto-imported)
     pgn.ts                     # generatePgn: MoveNode fa → PGN string (Lichess-kompatibilis)
+    uci.ts                     # uciMovesToSan, parseUciScore, evalToNumber, formatEval
+    openings.ts                # OPENING_PRESETS + parseOpeningMoves (SAN → UCI)
   types/
     chess.ts                   # ChessMove, EvalResult, GameState, MoveNode, VarLine
     game.ts                    # GameRoom, PlayerToken, RoomStatus
+    training.ts                # TrainingSettings, TrainingPosition, TrainingStats
 ```
 
 ---

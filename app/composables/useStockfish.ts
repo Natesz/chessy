@@ -1,4 +1,3 @@
-import { Chess } from 'chess.js'
 import type { AnalysisLine, EvalResult } from '~/types/chess'
 
 export function useStockfish() {
@@ -25,26 +24,6 @@ export function useStockfish() {
   const evalResult = ref<EvalResult | null>(null)
   const isAnalyzing = ref(false)
   const analysisLines = ref<AnalysisLine[]>([])
-
-  function uciMovesToSan(fen: string, uciMoves: string[]): string[] {
-    const chess = new Chess(fen)
-    const san: string[] = []
-    for (const uci of uciMoves) {
-      try {
-        const result = chess.move({
-          from: uci.slice(0, 2),
-          to: uci.slice(2, 4),
-          promotion: uci.length === 5 ? uci[4] : undefined,
-        })
-        if (!result) break
-        san.push(result.san)
-      }
-      catch {
-        break
-      }
-    }
-    return san
-  }
 
   function sendAnalyze(fen: string, continueFromCache = false) {
     if (!worker) return
@@ -92,28 +71,7 @@ export function useStockfish() {
         const multipvIndex = multipvMatch ? parseInt(multipvMatch[1]) : 1
         const depth = parseInt(depthMatch?.[1] ?? '0')
 
-        let scoreResult: EvalResult | null = null
-
-        if (line.includes('score cp')) {
-          const cpMatch = line.match(/score cp (-?\d+)/)
-          if (cpMatch) {
-            scoreResult = {
-              type: 'cp',
-              value: (parseInt(cpMatch[1]) / 100) * colorMult,
-              depth,
-            }
-          }
-        }
-        else if (line.includes('score mate')) {
-          const mateMatch = line.match(/score mate (-?\d+)/)
-          if (mateMatch) {
-            scoreResult = {
-              type: 'mate',
-              value: parseInt(mateMatch[1]) * colorMult,
-              depth,
-            }
-          }
-        }
+        const scoreResult = parseUciScore(line, colorMult, depth)
 
         if (scoreResult) {
           if (multipvIndex === 1) {

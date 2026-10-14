@@ -208,6 +208,26 @@ Ez a fájl minden iteráció és patch után frissítendő. Rögzíti, mi kész�
 
 ---
 
+## Iteráció 06 – Pozíció-értékelő edzés
+
+**Terv:** `docs/plans/iter-06-main-position-training.md`
+**Státusz:** ✅ Kész
+
+### Implementált feature-ök
+- ✅ `app/pages/training.vue`: „Edzés” oldal – nem mozgatható tábla + Világos / Egyenlő / Sötét válaszgombok (billentyű: 1/2/3, Space = következő)
+- ✅ Lichess OAuth PKCE bejelentkezés (`useLichessAuth.ts`) – az opening explorer API tokent igényel
+- ✅ Pozíció-generálás: explorer random walk a megnyitásból → top/recent játszma → véletlen fél-lépés → Stockfish (depth 14–18, MultiPV 3) → szűrés
+- ✅ Megnyitás-szűrés: 19 preset (Caro-Kann, Jobava London, London, Najdorf, …) + egyedi lépéssor
+- ✅ Állástípusok: Klasszikus (előny-tartomány), Puzzle (egyetlen nyerő lépés, gap küszöb), Egyensúly-pontos-lépés (≈0, de csak egy lépés tartja), Vegyes
+- ✅ Állítható: előny min/max, gap, egyenlő-küszöb, játszmaszakasz, min. értékszám, gépi mélység, nyugodt állás szűrő
+- ✅ Előtöltés (2 állás a háttérben), szekvenciális Lichess-hívások, 429 → 60 s szünet
+- ✅ Eredmény: helyes/hibás, gépi értékelés, megoldás-sorok (kérésre), Lichess játszma-link a pontos fél-lépéshez + Lichess elemző link
+- ✅ Statisztika localStorage-ban: pont, pontosság, sorozat, rekord, típusonként és megnyitásonként
+- ✅ `app/utils/uci.ts`: közös UCI score / SAN helper (`useStockfish.ts` is ezt használja)
+- ✅ Playwright: `tests/e2e/training.spec.ts` (mockolt Lichess API)
+
+---
+
 ## Jövőbeli modulok (nem ütemezett)
 
 | Modul | Leírás |
