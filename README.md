@@ -39,6 +39,7 @@ Az alkalmazás jelenleg egy teljes értékű sakktáblát tartalmaz, amelyen:
 - **Lichess link**: válasz után egy kattintással megnyitható az eredeti játszma pontosan az adott lépésnél, hogy ott elemezd tovább
 - A funkcióhoz egyszeri, ingyenes Lichess-bejelentkezés szükséges
 - **Javítás (patch-01)**: az edzés indításakor fellépő hiba megszűnt; mostantól bármilyen szintű játszmából érkezhetnek állások, a beállítások egyszerűbbek lettek
+- **Javítás (patch-02)**: a beállítások módosítása azonnal érvényes a következő állásra; a válasz után csak az eredeti játszma linkje jelenik meg
 
 ---
 

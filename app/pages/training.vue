@@ -90,7 +90,7 @@ function handleResetStats() {
       <div v-if="!auth.isLoggedIn.value" class="bg-gray-800 rounded-none lg:rounded-lg p-4 flex flex-col gap-3" data-testid="lichess-login-card">
         <h2 class="text-base font-semibold text-white">Pozíció-értékelő edzés</h2>
         <p class="text-sm text-gray-300">
-          Valódi, erős játékosok Lichess-játszmáiból kapsz állásokat – döntsd el, ki áll jobban!
+          Valódi Lichess-játszmákból kapsz állásokat – döntsd el, ki áll jobban!
           Az állások kereséséhez a Lichess megnyitás-adatbázisát használjuk, ehhez be kell jelentkezned (ingyenes, csak olvasási hozzáférés).
         </p>
         <p v-if="auth.authError.value" class="text-sm text-red-400">{{ auth.authError.value }}</p>

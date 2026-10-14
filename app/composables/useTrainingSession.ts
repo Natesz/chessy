@@ -15,7 +15,7 @@ import { LichessAuthError } from '~/composables/useLichessApi'
 export const MAX_ADVANTAGE_CAP = 10 // ennél a csúszkaértéknél nincs felső korlát
 const SETTINGS_KEY = 'chessy-training-settings'
 const STATS_KEY = 'chessy-training-stats'
-const PREFETCH = 2
+const PREFETCH = 1 // 1 előre betöltött állás → a „Következő” azonnali
 const MAX_ATTEMPTS = 15 // kiértékelt jelölt pozíciók száma egy feladványhoz
 const POSITIONS_PER_GAME = 2
 const MIN_MOVE_GAMES = 20 // random walk: ennél kevesebb játszmás lépést nem választunk
@@ -144,7 +144,14 @@ export function useTrainingSession() {
   const queue: TrainingPosition[] = []
   const queueSize = ref(0)
 
-  watch(settings, v => localStorage.setItem(SETTINGS_KEY, JSON.stringify(v)), { deep: true })
+  // Beállítás-váltáskor a régi beállítással előtöltött állás eldobva, új keresés indul
+  // (debounce: csúszka húzásakor ne induljon minden lépésnél új keresés)
+  let settingsTimer: ReturnType<typeof setTimeout> | null = null
+  watch(settings, (v) => {
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(v))
+    if (settingsTimer) clearTimeout(settingsTimer)
+    settingsTimer = setTimeout(invalidateQueue, 400)
+  }, { deep: true })
   watch(stats, v => localStorage.setItem(STATS_KEY, JSON.stringify(v)), { deep: true })
 
   const openingResolved = computed<{ name: string, uci: string[], error: string | null }>(() => {
@@ -307,8 +314,19 @@ export function useTrainingSession() {
     finally {
       filling = false
       // Beállítás-váltás történt keresés közben → új generációval újraindul
-      if (gen !== generation && status.value === 'searching') fillQueue()
+      if (gen !== generation && status.value !== 'idle' && status.value !== 'error') fillQueue()
     }
+  }
+
+  function invalidateQueue() {
+    if (status.value === 'idle') return
+    generation++
+    queue.length = 0
+    queueSize.value = 0
+    errorMessage.value = null
+    if (status.value === 'error') return // „Újrapróbálás” / Indítás indítja
+    if (status.value === 'searching') searchAttempt.value = 0
+    fillQueue()
   }
 
   function start() {
@@ -372,6 +390,7 @@ export function useTrainingSession() {
   }
 
   function destroy() {
+    if (settingsTimer) clearTimeout(settingsTimer)
     generation++
     evaluator.destroy()
   }

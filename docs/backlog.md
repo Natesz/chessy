@@ -231,6 +231,7 @@ Ez a fájl minden iteráció és patch után frissítendő. Rögzíti, mi kész�
 | Patch | Hiba | Megoldás |
 |-------|------|----------|
 | `iter-06-patch-01-games-bulk-export.md` | Indításkor hiba: `GET /game/export/{id}` böngészőből 401 („Login required”), tokennel CORS preflight 404 | Játszmák `POST /api/games/export/_ids` (text/plain, auth fejléc nélkül, ndjson) egy hívással; rating- és mélység-szűrő eltávolítva (minden játszma, fix depth 16) |
+| `iter-06-patch-02-prefetch-settings.md` | Beállítás-váltás után még a régi beállítással előtöltött állások jöttek; felesleges „Elemzés a Lichessen” link; „erős játékosok” szöveg | Előtöltés 2 → 1; beállítás-váltáskor (400 ms debounce) előtöltött állás eldobva + új keresés; csak játszma-link marad; login szöveg pontosítva |
 
 ---
 

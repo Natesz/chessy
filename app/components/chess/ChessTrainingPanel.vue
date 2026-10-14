@@ -47,12 +47,6 @@ const gameUrl = computed(() => {
   return `https://lichess.org/${p.gameId}${p.turn === 'b' ? '/black' : ''}#${p.ply}`
 })
 
-const analysisUrl = computed(() => {
-  const p = props.position
-  if (!p) return ''
-  return `https://lichess.org/analysis/standard/${p.fen.replace(/ /g, '_')}?color=${p.turn === 'w' ? 'white' : 'black'}`
-})
-
 function lineText(moves: string[], fen: string) {
   const parts = fen.split(' ')
   let moveNo = parseInt(parts[5] ?? '1')
@@ -155,17 +149,11 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
           <div v-if="position.gameOpening">{{ position.gameOpening }}</div>
         </div>
 
-        <div class="grid grid-cols-2 gap-2">
-          <a
-            :href="gameUrl" target="_blank" rel="noopener"
-            class="text-center py-1.5 rounded bg-gray-700 hover:bg-gray-600 text-xs text-gray-200"
-            data-testid="lichess-game-link"
-          >Játszma a Lichessen ↗</a>
-          <a
-            :href="analysisUrl" target="_blank" rel="noopener"
-            class="text-center py-1.5 rounded bg-gray-700 hover:bg-gray-600 text-xs text-gray-200"
-          >Elemzés a Lichessen ↗</a>
-        </div>
+        <a
+          :href="gameUrl" target="_blank" rel="noopener"
+          class="text-center py-1.5 rounded bg-gray-700 hover:bg-gray-600 text-xs text-gray-200"
+          data-testid="lichess-game-link"
+        >Játszma a Lichessen ↗</a>
 
         <button
           v-if="!showSolution"
