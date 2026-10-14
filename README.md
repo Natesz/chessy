@@ -38,6 +38,7 @@ Az alkalmazás jelenleg egy teljes értékű sakktáblát tartalmaz, amelyen:
 - **Pontszámítás**: pontok, sorozat és rekord, megnyitásonkénti pontossággal – a böngészőben megmarad
 - **Lichess link**: válasz után egy kattintással megnyitható az eredeti játszma pontosan az adott lépésnél, hogy ott elemezd tovább
 - A funkcióhoz egyszeri, ingyenes Lichess-bejelentkezés szükséges
+- **Javítás (patch-01)**: az edzés indításakor fellépő hiba megszűnt; mostantól bármilyen szintű játszmából érkezhetnek állások, a beállítások egyszerűbbek lettek
 
 ---
 

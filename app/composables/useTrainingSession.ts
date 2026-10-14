@@ -19,6 +19,7 @@ const PREFETCH = 2
 const MAX_ATTEMPTS = 15 // kiértékelt jelölt pozíciók száma egy feladványhoz
 const POSITIONS_PER_GAME = 2
 const MIN_MOVE_GAMES = 20 // random walk: ennél kevesebb játszmás lépést nem választunk
+const ENGINE_DEPTH = 16
 
 export const DEFAULT_SETTINGS: TrainingSettings = {
   openingId: 'any',
@@ -30,9 +31,7 @@ export const DEFAULT_SETTINGS: TrainingSettings = {
   equalThreshold: 0.5,
   minPly: 16,
   maxPly: 50,
-  minRating: 2200,
   quietOnly: true,
-  depth: 16,
 }
 
 function emptyStats(): TrainingStats {
@@ -168,15 +167,15 @@ export function useTrainingSession() {
   const usedGameIds = new Set<string>()
 
   /** Explorer random walk a megnyitás végétől; a végpont játszmáit adja vissza */
-  async function randomWalk(openingUci: string[], minRating: number) {
+  async function randomWalk(openingUci: string[]) {
     const play = [...openingUci]
     const extra = openingUci.length === 0 ? randInt(4, 10) : randInt(0, 4)
-    let node = await api.fetchExplorer(play, minRating)
+    let node = await api.fetchExplorer(play)
     let games: ExplorerGameRef[] = [...(node.topGames ?? []), ...(node.recentGames ?? [])]
     for (let i = 0; i < extra; i++) {
       const move = pickWeighted(node.moves)
       if (!move) break
-      const next = await api.fetchExplorer([...play, move.uci], minRating)
+      const next = await api.fetchExplorer([...play, move.uci])
       const nextGames = [...(next.topGames ?? []), ...(next.recentGames ?? [])]
       if (!nextGames.length) break
       play.push(move.uci)
@@ -227,25 +226,28 @@ export function useTrainingSession() {
     let walks = 0
     while (attempts < MAX_ATTEMPTS && walks < MAX_ATTEMPTS * 2) {
       walks++
-      const { play, games } = await randomWalk(opening.uci, s.minRating)
+      const { play, games } = await randomWalk(opening.uci)
       if (gen !== generation) throw new Error('stale')
       const fresh = games.filter(g => !usedGameIds.has(g.id))
       const ref = fresh[randInt(0, fresh.length - 1)]
       if (!ref) {
         if (!games.length && play.length === opening.uci.length) {
-          throw new NoPositionError('Ehhez a megnyitáshoz nincs elég erős játékosok közötti játszma – próbálj alacsonyabb minimum értékszámot.')
+          throw new NoPositionError('Ehhez a megnyitáshoz nem találtam játszmát a Lichess adatbázisban.')
         }
         continue
       }
       usedGameIds.add(ref.id)
 
+      // Egy hívással a csomópont összes friss játszmája (cache-be), utána a kiválasztott
+      await api.fetchGames(fresh.map(g => g.id))
       const game = await api.fetchGame(ref.id)
       if (gen !== generation) throw new Error('stale')
+      if (!game) continue
 
       for (const c of buildCandidates(game, play.length, s)) {
         attempts++
         if (!current.value) searchAttempt.value = attempts
-        const lines = await evaluator.evaluate(c.fen, s.depth, 3)
+        const lines = await evaluator.evaluate(c.fen, ENGINE_DEPTH, 3)
         if (gen !== generation) throw new Error('stale')
         const turn = c.fen.split(' ')[1] as 'w' | 'b'
         const cls = classifyPosition(turn, lines, s)

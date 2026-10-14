@@ -37,15 +37,18 @@ test.describe('Training page', () => {
       localStorage.setItem('chessy-lichess-auth', JSON.stringify({
         token: 'test-token', expiresAt: Date.now() + 86400_000, username: 'tester',
       }))
-      // Bármely pozíció megfeleljen: klasszikus mód, 0–∞ előny, gyors mélység
+      // Bármely pozíció megfeleljen: klasszikus mód, 0–∞ előny
       localStorage.setItem('chessy-training-settings', JSON.stringify({
         openingId: 'any', mode: 'classic', minAdvantage: 0, maxAdvantage: 10,
-        minPly: 16, maxPly: 20, quietOnly: false, depth: 8,
+        minPly: 16, maxPly: 20, quietOnly: false,
       }))
       localStorage.removeItem('chessy-training-stats')
     })
     await page.route('https://explorer.lichess.ovh/**', route => route.fulfill({ json: EXPLORER }))
-    await page.route('https://lichess.org/game/export/**', route => route.fulfill({ json: GAME }))
+    await page.route('https://lichess.org/api/games/export/_ids**', route => route.fulfill({
+      contentType: 'application/x-ndjson',
+      body: `${JSON.stringify(GAME)}\n`,
+    }))
     await page.route('https://lichess.org/api/account', route => route.fulfill({ json: { username: 'tester' } }))
 
     await page.goto('/training')

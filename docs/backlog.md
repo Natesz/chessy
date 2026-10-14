@@ -226,6 +226,12 @@ Ez a fájl minden iteráció és patch után frissítendő. Rögzíti, mi kész�
 - ✅ `app/utils/uci.ts`: közös UCI score / SAN helper (`useStockfish.ts` is ezt használja)
 - ✅ Playwright: `tests/e2e/training.spec.ts` (mockolt Lichess API)
 
+### Patch-ek
+
+| Patch | Hiba | Megoldás |
+|-------|------|----------|
+| `iter-06-patch-01-games-bulk-export.md` | Indításkor hiba: `GET /game/export/{id}` böngészőből 401 („Login required”), tokennel CORS preflight 404 | Játszmák `POST /api/games/export/_ids` (text/plain, auth fejléc nélkül, ndjson) egy hívással; rating- és mélység-szűrő eltávolítva (minden játszma, fix depth 16) |
+
 ---
 
 ## Jövőbeli modulok (nem ütemezett)

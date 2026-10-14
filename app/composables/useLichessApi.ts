@@ -1,7 +1,6 @@
 // Lichess API hívások – szigorúan egymás után (Lichess kérése), 429 esetén 60 s szünet.
 const EXPLORER = 'https://explorer.lichess.ovh/lichess'
 const LICHESS = 'https://lichess.org'
-const RATING_GROUPS = [1600, 1800, 2000, 2200, 2500]
 
 export interface ExplorerMove {
   uci: string
@@ -75,11 +74,9 @@ export function useLichessApi() {
     return run
   }
 
-  async function fetchExplorer(play: string[], minRating: number): Promise<ExplorerResponse> {
-    const ratings = RATING_GROUPS.filter(r => r >= minRating)
+  async function fetchExplorer(play: string[]): Promise<ExplorerResponse> {
+    // Nincs rating/speed szűrés: minden értékszám és tempó mehet
     const params = new URLSearchParams({
-      ratings: (ratings.length ? ratings : [2500]).join(','),
-      speeds: 'blitz,rapid,classical',
       moves: '12',
       topGames: '4',
       recentGames: '4',
@@ -93,19 +90,50 @@ export function useLichessApi() {
     return data
   }
 
-  async function fetchGame(id: string): Promise<LichessGame> {
-    const cached = gameCache.get(id)
-    if (cached) return cached
-    const data = await request<LichessGame>(
-      `${LICHESS}/game/export/${id}?moves=true&clocks=false&evals=false&opening=true`,
+  /**
+   * Játszmák letöltése egy hívással: POST /api/games/export/_ids.
+   * A GET /game/export/{id} böngészőből gyakran 401-et ad ("Login required"),
+   * Authorization fejléccel pedig a CORS preflight 404-be fut. Itt text/plain body,
+   * auth fejléc nélkül → "simple request", nincs preflight.
+   */
+  async function fetchGames(ids: string[]): Promise<void> {
+    const missing = [...new Set(ids)].filter(id => !gameCache.has(id))
+    if (!missing.length) return
+    const run = queue.then(() => doFetchGames(missing))
+    queue = run.catch(() => {})
+    await run
+  }
+
+  async function doFetchGames(ids: string[], retry = true): Promise<void> {
+    const res = await fetch(
+      `${LICHESS}/api/games/export/_ids?moves=true&clocks=false&evals=false&opening=true`,
+      { method: 'POST', headers: { 'Content-Type': 'text/plain', 'Accept': 'application/x-ndjson' }, body: ids.join(',') },
     )
-    gameCache.set(id, data)
-    return data
+    if (res.status === 429) {
+      rateLimitedUntil.value = Date.now() + 60_000
+      await sleep(60_000)
+      rateLimitedUntil.value = 0
+      if (retry) return doFetchGames(ids, false)
+      throw new Error('A Lichess túl sok kérést jelzett, próbáld később.')
+    }
+    if (!res.ok) throw new Error(`Lichess hiba (${res.status})`)
+    const text = await res.text()
+    for (const line of text.split('\n')) {
+      if (!line.trim()) continue
+      const game = JSON.parse(line) as LichessGame
+      gameCache.set(game.id, game)
+    }
+  }
+
+  async function fetchGame(id: string): Promise<LichessGame | null> {
+    await fetchGames([id])
+    return gameCache.get(id) ?? null
   }
 
   return {
     rateLimitedUntil: readonly(rateLimitedUntil),
     fetchExplorer,
+    fetchGames,
     fetchGame,
   }
 }

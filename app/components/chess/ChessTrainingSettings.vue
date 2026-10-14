@@ -148,26 +148,6 @@ function setMaxPly(v: number) {
       >
     </div>
 
-    <div class="grid grid-cols-2 gap-2">
-      <label class="flex flex-col gap-1">
-        <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Min. értékszám</span>
-        <select v-model.number="settings.minRating" class="bg-gray-700 border border-gray-600 rounded px-2 py-1.5 text-sm">
-          <option :value="1800">1800+</option>
-          <option :value="2000">2000+</option>
-          <option :value="2200">2200+</option>
-          <option :value="2500">2500+</option>
-        </select>
-      </label>
-      <label class="flex flex-col gap-1">
-        <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Gép mélység</span>
-        <select v-model.number="settings.depth" class="bg-gray-700 border border-gray-600 rounded px-2 py-1.5 text-sm">
-          <option :value="14">14 (gyors)</option>
-          <option :value="16">16</option>
-          <option :value="18">18 (pontos)</option>
-        </select>
-      </label>
-    </div>
-
     <label class="flex items-center gap-2 text-xs text-gray-300">
       <input v-model="settings.quietOnly" type="checkbox" class="accent-amber-500">
       Csak nyugodt állások (nincs sakk, előző lépés nem ütés)

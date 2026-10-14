@@ -25,3 +25,6 @@ public/stockfish/
 .env
 .env.*
 !.env.example
+
+# Böngésző HAR exportok (tokent tartalmazhatnak)
+HAR/

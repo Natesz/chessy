@@ -15,9 +15,7 @@ export interface TrainingSettings {
   equalThreshold: number // |eval| ez alatt = egyenlő
   minPly: number
   maxPly: number
-  minRating: number
   quietOnly: boolean // nincs sakk, és az előző lépés nem ütés
-  depth: number
 }
 
 export interface TrainingPlayer {
