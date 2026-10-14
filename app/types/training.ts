@@ -16,6 +16,8 @@ export interface TrainingSettings {
   minPly: number
   maxPly: number
   quietOnly: boolean // nincs sakk, és az előző lépés nem ütés
+  minElo: number // a két játékos átlag-értékszáma; ELO_MIN = nincs alsó korlát
+  maxElo: number // ELO_CAP = nincs felső korlát
 }
 
 export interface TrainingPlayer {

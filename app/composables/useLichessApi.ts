@@ -1,6 +1,8 @@
 // Lichess API hívások – szigorúan egymás után (Lichess kérése), 429 esetén 60 s szünet.
 const EXPLORER = 'https://explorer.lichess.ovh/lichess'
 const LICHESS = 'https://lichess.org'
+// Explorer rating csoportok: g → [g, következő g)
+export const EXPLORER_RATING_GROUPS = [0, 1000, 1200, 1400, 1600, 1800, 2000, 2200, 2500]
 
 export interface ExplorerMove {
   uci: string
@@ -74,14 +76,15 @@ export function useLichessApi() {
     return run
   }
 
-  async function fetchExplorer(play: string[]): Promise<ExplorerResponse> {
-    // Nincs rating/speed szűrés: minden értékszám és tempó mehet
+  /** ratings: explorer rating csoportok (üres = mind). Nincs speed szűrés: minden tempó mehet */
+  async function fetchExplorer(play: string[], ratings: number[] = []): Promise<ExplorerResponse> {
     const params = new URLSearchParams({
       moves: '12',
       topGames: '4',
       recentGames: '4',
     })
     if (play.length) params.set('play', play.join(','))
+    if (ratings.length) params.set('ratings', ratings.join(','))
     const url = `${EXPLORER}?${params}`
     const cached = explorerCache.get(url)
     if (cached) return cached

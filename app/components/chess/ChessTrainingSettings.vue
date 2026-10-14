@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { TrainingMode, TrainingSettings } from '~/types/training'
-import { MAX_ADVANTAGE_CAP } from '~/composables/useTrainingSession'
+import { ELO_CAP, ELO_MIN, MAX_ADVANTAGE_CAP } from '~/composables/useTrainingSession'
 
 defineProps<{
   openingError: string | null
@@ -35,6 +35,16 @@ function setMin(v: number) {
 function setMax(v: number) {
   settings.value.maxAdvantage = v
   if (settings.value.minAdvantage > v) settings.value.minAdvantage = v
+}
+
+function setMinElo(v: number) {
+  settings.value.minElo = v
+  if (settings.value.maxElo < v) settings.value.maxElo = v
+}
+
+function setMaxElo(v: number) {
+  settings.value.maxElo = v
+  if (settings.value.minElo > v) settings.value.minElo = v
 }
 
 function setMinPly(v: number) {
@@ -145,6 +155,26 @@ function setMaxPly(v: number) {
         :value="settings.maxPly"
         class="accent-amber-500"
         @input="setMaxPly(Number(($event.target as HTMLInputElement).value))"
+      >
+    </div>
+
+    <!-- Értékszám tartomány (a két játékos átlaga) -->
+    <div class="flex flex-col gap-1">
+      <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+        Értékszám (átlag): {{ settings.minElo <= ELO_MIN ? 'bármi' : settings.minElo }} – {{ settings.maxElo >= ELO_CAP ? 'bármi' : settings.maxElo }}
+      </span>
+      <input
+        type="range" :min="ELO_MIN" :max="ELO_CAP" step="100"
+        :value="settings.minElo"
+        class="accent-amber-500"
+        data-testid="training-min-elo"
+        @input="setMinElo(Number(($event.target as HTMLInputElement).value))"
+      >
+      <input
+        type="range" :min="ELO_MIN" :max="ELO_CAP" step="100"
+        :value="settings.maxElo"
+        class="accent-amber-500"
+        @input="setMaxElo(Number(($event.target as HTMLInputElement).value))"
       >
     </div>
 

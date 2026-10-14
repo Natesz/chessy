@@ -84,7 +84,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
     <div v-if="status === 'searching'" class="flex flex-col items-center gap-2 py-6 text-gray-300 text-sm">
       <div class="w-8 h-8 border-4 border-amber-500 border-t-transparent rounded-full animate-spin" />
       <span v-if="rateLimited">A Lichess lassításra kért – 1 perc szünet…</span>
-      <span v-else>Állás keresése… ({{ searchAttempt }}/{{ maxAttempts }})</span>
+      <span v-else>Állás keresése… (játszma {{ searchAttempt }}/{{ maxAttempts }})</span>
     </div>
 
     <!-- Hiba -->
